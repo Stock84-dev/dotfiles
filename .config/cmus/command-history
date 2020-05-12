@@ -1,0 +1,18 @@
+shell 
+filter 
+help
+pl-create awaken
+pl-create focus
+n
+h
+new
+pl-create new
+pl-rename TOOL
+rename TOOL
+bind -f common u shell ~/data/linux/scripts/cmus_update.sh
+update-cache 
+update-cache
+cd ~/data/Music/TOOL
+cd TOOL
+add ~/data/Music/
+add ~/data/Music

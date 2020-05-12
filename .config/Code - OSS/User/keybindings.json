@@ -1,0 +1,23 @@
+// Place your key bindings in this file to override the defaults
+[
+    { 
+        "key": "ctrl+tab",            
+        "command": "workbench.action.openNextRecentlyUsedEditorInGroup",
+        "when": "editorFocus" 
+    },
+    {
+         "key": "shift+ctrl+tab",      
+        "command": "workbench.action.openPreviousRecentlyUsedEditorInGroup",
+        "when": "editorFocus" 
+    },
+    {
+        "key": "ctrl+tab",
+        "command": "workbench.action.terminal.focusNext",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+shift+tab",
+        "command": "workbench.action.terminal.focusPrevious",
+        "when": "terminalFocus"
+    }
+]

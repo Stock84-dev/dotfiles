@@ -1,0 +1,109 @@
+# It's annoying to press esc twice when programming in pycharm because of documentation
+# window that I have to close so I send 2 escapes
+~Escape
+	~/data/linux/scripts/double_escape.sh
+# if we really need one keystroke
+#super + @Escape
+#	xdotoll key Escape
+super + Return
+	terminal
+super + q
+	rofi -show run
+super + shift + q 
+	rofi -show window
+super + control + shift + w
+	feh --randomize --bg-center ~/data/Pictures/wallpapers/*
+#wal -i ~/data/Pictures/wallpapers/ -a 70 -b 000000 -q
+super + alt + c
+	urxvt -e sh -c "python ~/.config/qtile/config.py;$SHELL"
+super + control + c
+	terminal -e vim ~/.config/qtile/config.py
+super + shift + c
+	terminal -e vim ~/.config/sxhkd/sxhkdrc
+super + e
+	terminal -e "bash -c ranger"
+super + control + k
+	terminal -e python -ic "from __future__ import division; from math import *; from random import *"
+super + control + p
+	~/data/linux/scripts/monitorLayout.sh
+super + control + r
+	qtile-cmd -o cmd -f restart
+# reload this config file
+super + shift + r
+	pkill -USR1 -x sxhkd
+# download youtube song, select address bar -> copy to clipboard -> call script
+super + ctrl + d
+	sh ~/data/linux/scripts/download.sh
+super + control + s
+	sxiv ~/data/Pictures/schedule.png
+super + t
+	terminal -e vim ~/data/Documents/Documents/checklist.todo
+super + g
+	terminal -e vim ~/data/Documents/Documents/GOALS
+super + v
+	virtualboxvm --startvm "Windows 10"
+super + shift + v
+	vboxmanage controlvm "Windows 10" savestate
+super + control + v
+	urxvt -e vim ~/.vimrc
+super + z 
+	morc_menu
+super + plus 
+	notify-send -t 1000 $(amixer set Master 0 | grep -P -o '\d+%')
+super + minus 
+	notify-send -t 1000 $(amixer set Master 5%- | grep -P -o '\d+%')
+super + equal
+	notify-send -t 1000 $(amixer set Master 5%+ | grep -P -o '\d+%')
+super + {_,shift + }9
+	~/data/linux/scripts/keyboardLayout.sh {hr, us}
+super + Print
+	scrot ~/data/Pictures/screenshots/$(date +%d.%m.%y-%H:%M:%S).png && notify-send -t 1000 "Screenshot saved."
+super + shift + Print
+	scrot -s ~/data/Pictures/screenshots/$(date +%d.%m.%y-%H:%M:%S).png && notify-send -t 1000 "Screenshot saved."
+
+# Basic binds
+#super + Return
+#	$TERMINAL
+#super + d
+#	dmenu_run
+#super + r
+#	$TERMINAL -e $FILE
+#super + e
+#	$TERMINAL -e neomutt
+#super + m
+#	$TERMINAL -e ncmpcpp
+#super + n
+#	$TERMINAL -e newsboat
+#super + i
+#	$TERMINAL -e htop
+#super + y
+#	$TERMINAL -e calcurse
+#super + shift + a
+#	$TERMINAL -e pulsemixer; pkill -RTMIN+10 i3blocks
+#super + shift + c
+#	camtoggle
+#super + shift + e
+#	tutorialvids
+#super + w
+#	webby | xargs -r $BROWSER
+#super + shift + w
+#	$BROWSER
+#super + shift + g
+#	gimp
+#
+## Et cetera...
+#super + grave
+#	dmenuunicode
+#super + Scroll_Lock
+#	killall screenkey || screenkey
+#super + Insert
+#	showclip
+#super + shift + x
+#	prompt "Shutdown computer?" "sudo -A shutdown -h now"
+#super + shift + BackSpace
+#	prompt "Reboot computer?" "sudo -A shutdown -r now"
+#super + x
+#	mpc pause; pauseallmpv; i3lock -e -f -c 1d2021; xset dpms force off
+#XF86Launch1
+#	xset dpms force off
+#XF86AudioMute

@@ -1,0 +1,61 @@
+{
+    "explorer.confirmDragAndDrop": false,
+    "editor.minimap.enabled": false,
+    "editor.fontSize": 12.5,
+    "editor.lineNumbers": "relative",
+    "vim.insertModeKeyBindings": [
+        {
+          "before": ["j", "j"],
+          "after": ["<Esc>"]
+        }
+      ],
+    "vim.timeout": 500,
+    "vim.visualstar": true,
+    "vim.visualModeKeyBindingsNonRecursive": [
+      {
+          "before": [
+              ">"
+          ],
+          "commands": [
+              "editor.action.indentLines"
+          ]
+      },
+      {
+          "before": [
+              "<"
+          ],
+          "commands": [
+              "editor.action.outdentLines"
+          ]
+      },
+    ],
+    "vim.normalModeKeyBindingsNonRecursive": [
+      {
+          "before": ["Z", "Z"],
+          "commands": [
+              ":wq"
+          ]
+      },
+      {
+          "before": ["<C-j>"],
+          "after": ["<leader>", "<leader>", "w"]
+      },
+      {
+          "before": ["<C-k>"],
+          "after": ["<leader>", "<leader>", "b"]
+      }
+    ],
+    "vim.easymotion": true,
+    "workbench.colorTheme": "Solarized Dark+",
+    "debug.inlineValues": true,
+    "debug.internalConsoleOptions": "neverOpen",
+    "debug.openDebug": "neverOpen",
+    "terminal.explorerKind": "external",
+    "terminal.external.linuxExec": "urxvt",
+    "rust-client.channel": "stable",
+    "files.autoSave": "afterDelay",
+    "files.associations": {
+        "*.cl": "c"
+    },
+    "C_Cpp.errorSquiggles": "Disabled",
+}

@@ -1,0 +1,3 @@
+set easymotion
+nmap <C-j> <leader><leader>w 
+nmap <C-k> <leader><leader>b 
