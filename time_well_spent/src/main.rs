@@ -1,11 +1,10 @@
-#[macro_use]
-extern crate serde;
+#![deny(unused_must_use)]
 
 use clap::*;
 use serde::{Deserialize, Serialize};
 use anyhow::Result;
 use std::str::FromStr;
-use chrono::{DateTime, Utc, Duration, Local, NaiveDateTime, NaiveDate};
+use chrono::{DateTime, Duration, Local, NaiveDateTime, NaiveDate};
 use std::process::{Command, Stdio};
 use std::collections::HashMap;
 use csv::{Reader, ReaderBuilder};
@@ -42,9 +41,12 @@ struct Entry {
     total_hours: f32,
 }
 
-fn show(entries: &HashMap<NaiveDate, f32>) -> Result<()> {
-    let mut total: f32 = entries.values().sum();
-    let mut cmd = Command::new("feedgnuplot")
+fn show(entries: &HashMap<NaiveDate, f32>, duration: Duration) -> Result<()> {
+    let total: f32 = entries.values().sum();
+    let avg = total / duration.num_days() as f32;
+    let cmd = Command::new("feedgnuplot")
+        .arg("--terminal")
+        .arg("x11")
         .arg("--with")
         .arg("boxes")
         .arg("--set")
@@ -54,7 +56,7 @@ fn show(entries: &HashMap<NaiveDate, f32>) -> Result<()> {
         .arg("--domain")
         .arg("--lines")
         .arg("--title")
-        .arg(format!("Total hours: {}", total))
+        .arg(format!("Total hours: {:.2}, avg: {:.2}", total, avg))
         .arg("--timefmt")
         .arg("%Y-%m-%d-%H:%M:%S")
         .stdin(Stdio::piped())
@@ -72,7 +74,7 @@ fn show(entries: &HashMap<NaiveDate, f32>) -> Result<()> {
 
 fn load_and_show(reader: &mut Reader<File>, duration: Duration, end_date: NaiveDateTime) -> Result<()> {
     let data = load_data(reader, duration, end_date)?;
-    show(&data)
+    show(&data, duration)
 }
 
 fn load_data(reader: &mut Reader<File>, duration: Duration, end_date: NaiveDateTime) -> Result<HashMap<NaiveDate, f32>> {
@@ -93,13 +95,12 @@ fn main() -> Result<()> {
     let mut reader = ReaderBuilder::new().delimiter(b';').from_path(&args.path)?;
     let now = chrono::Local::now().naive_local();
 
-
     if args.ytd {
-        load_and_show(&mut reader, Duration::days(365), now);
+        load_and_show(&mut reader, Duration::days(365), now)?;
     } else if args.mtd {
-        load_and_show(&mut reader, Duration::days(30), now);
+        load_and_show(&mut reader, Duration::days(30), now)?;
     } else if args.wtd {
-        load_and_show(&mut reader, Duration::days(7), now);
+        load_and_show(&mut reader, Duration::days(7), now)?;
     } else {
         if let Some(start_date) = &args.start_date {
             let start_date = DateTime::<Local>::from_str(&start_date)?.naive_local();
@@ -107,13 +108,12 @@ fn main() -> Result<()> {
                 Some(date) => chrono::DateTime::<Local>::from_str(date)?.naive_local(),
                 None => now,
             };
-            load_and_show(&mut reader, end_date - start_date, end_date);
+            load_and_show(&mut reader, end_date - start_date, end_date)?;
         }
         else {
             return Err(anyhow::anyhow!("Invalid arguments"));
         }
     }
-
 
     Ok(())
 }
