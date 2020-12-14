@@ -26,6 +26,7 @@
 import sys
 sys.path.append('/home/stock/data/linux/scripts/')
 import bitmexWidget
+from datetime import datetime
 from subprocess import call
 import threading
 from libqtile.config import Key, Screen, Group, Drag, Click, ScratchPad, DropDown, Match
@@ -40,6 +41,7 @@ def main(qtile):
 
 mod = "mod4"
 bitmex_widget = bitmexWidget.BitmexWidget()
+work_hours_widget = widget.TextBox("", bar.CALCULATED, **{'background': "#073642"});
 
 def toscreen(qtile, group_name):
     if group_name  == qtile.current_screen.group.name:
@@ -83,41 +85,31 @@ def shutdown(qtile):
 #    qtile.cmd_shutdown()
 #    threading.Thread(target=lambda: call(["pkill", "qtile"])).start()
 
-keys = [
+work_start_time = [None]
+# Integers cannot be passed as reference so passing it in a list.
+def toggle_work_hours_widget(start_time, widget):
+    if start_time[0] is None:
+        start_time[0] = datetime.now()
+        widget.background = "#268BD2"
+        widget.update("Working")
+    else:
+        file = open("/home/stock/data/Documents/Documents/work_hours.csv", "a")
+        start = datetime.timestamp(start_time[0])
+        end = datetime.timestamp(datetime.now())
+        # Constructing ISO 8601 time string.
+        starting_time = start_time[0].strftime("%Y-%m-%dT%H:%M:%S")
+        total_seconds = int(end - start)
+        total_minutes = float(total_seconds) / 60
+        total_hours = float(total_seconds) / 3600
+        file.write(f"{starting_time};{total_seconds};{total_minutes};{total_hours}\n")
+        widget.background = "#073642"
+        hours, remainder = divmod(int((datetime.now() - start_time[0]).total_seconds()), 3600)
+        minutes, seconds = divmod(remainder, 60)
+        widget.update(f"{hours}:{minutes}:{seconds}")
+        start_time[0] = None
+        file.close()
+    widget.draw()
 
-    # Layout hotkeys
-    Key([mod], "h", lazy.layout.shrink_main()),
-    Key([mod], "l", lazy.layout.grow_main()),
-    Key([mod], "j", lazy.layout.down()),
-    Key([mod], "k", lazy.layout.up()),
-    Key([mod, "shift"], "j", lazy.layout.shuffle_down()),
-    Key([mod, "shift"], "k", lazy.layout.shuffle_up()),
-    #Key([mod], "grave", lazy.screen.next_group(skip_empty=True)),
-    #Key([mod], "Tab", lazy.screen.prev_group(skip_empty=True)),
-
-
-    # Toggle between different layouts as defined below
-    Key([mod], "less", lazy.prev_layout()),
-    Key([mod, "shift"], "less", lazy.next_layout()),
-    Key([mod], "w", lazy.window.kill()),
-    Key([mod], "space", lazy.function(lambda qtile: qtile.cmd_hide_show_bar())),
-    Key([mod, 'control'], "m", lazy.function(change_abstract_window_state, state=5)),
-    Key([mod, 'control'], "n", lazy.window.resize_floating(0, 69)),
-    Key([mod, 'shift'], "n", lazy.window.move_floating(-1, -69)),
-
-#    Key([mod, "control"], "r", lazy.restart()),
-    Key([mod, "control"], "q", lazy.function(shutdown)),
-]
-keys.append(Key([mod, "control"], "space", lazy.window.toggle_floating()))
-keys.append(Key([mod, "shift"], "space", lazy.layout.command_sublayout('*', 'nextarrangement')))
-
-for key, x, y in [("Left", -10, 0), 
-                  ("Right", 10, 0), 
-                  ("Up", 0, -10),
-                  ("Down", 0, 10)]:
-    keys.append(Key([mod, "control"], key, lazy.window.move_floating(x, y)))
-    keys.append(Key([mod, "shift"], key, lazy.window.resize_floating(x, y)))
-    keys.append(Key([mod, "mod1"], key, lazy.window.move_to_screen_edge(key)))
 
 # specify which program should show up in group at launch
 group_matches = [
@@ -160,6 +152,7 @@ group_matches = [
     None,
 ]
 
+
 groups =  [
         Group('a', matches=group_matches[0], label='a: '),
         Group('s', matches=group_matches[1], label='s: '),
@@ -171,10 +164,42 @@ groups =  [
         Group('i', matches=group_matches[7], label='i'),
         Group('o', matches=group_matches[8], label='o'),
         Group('p', matches=group_matches[9], label='p'),
-       # ScratchPad('scratch', [
-       #     DropDown('term', 'urxvt'),
-       # ]),
-    ]
+        #ScratchPad("scratchpad", [
+        #    DropDown("term", "urxvt", opacity=0.8),
+
+        #    DropDown("qshell", "urxvt -hold -e bash",
+        #        x=0.05, y=0.4, width=0.9, height=0.6, opacity=0.9,
+        #        on_focus_lost_hide=True) ]),
+        ]
+
+keys = [
+    # Layout hotkeys
+    Key([mod, "control"], "h", lazy.layout.shrink_main()),
+    Key([mod, "control"], "l", lazy.layout.grow_main()),
+    Key([mod, "control"], "j", lazy.layout.down()),
+    Key([mod, "control"], "k", lazy.layout.up()),
+    Key([mod, "shift"], "j", lazy.layout.shuffle_down()),
+    Key([mod, "shift"], "k", lazy.layout.shuffle_up()),
+    #Key([mod], "grave", lazy.screen.next_group(skip_empty=True)),
+    #Key([mod], "Tab", lazy.screen.prev_group(skip_empty=True)),
+
+
+    # Toggle between different layouts as defined below
+    Key([mod], "m", lazy.prev_layout()),
+    Key([mod, "shift"], "m", lazy.next_layout()),
+    Key([mod], "w", lazy.window.kill()),
+    Key([mod], "space", lazy.function(lambda qtile: qtile.cmd_hide_show_bar())),
+    Key([mod, 'control'], "m", lazy.function(change_abstract_window_state, state=5)),
+    Key([mod, 'control'], "n", lazy.window.resize_floating(0, 69)),
+    Key([mod, 'shift'], "n", lazy.window.move_floating(-1, -69)),
+    # Lazy functions do not capture variables so passing lambda instead.
+    Key([mod, 'control'], "w", lazy.function(lambda qtile: toggle_work_hours_widget(work_start_time, work_hours_widget))),
+
+#    Key([mod, "control"], "r", lazy.restart()),
+    #Key([mod, "control"], "q", lazy.function(shutdown)),
+    #Key([], 'F11', lazy.group['scratchpad'].dropdown_toggle('term')),
+    #Key([], 'F12', lazy.group['scratchpad'].dropdown_toggle('qshell')),
+]
 
 for i in groups:
     keys.extend([
@@ -187,114 +212,126 @@ for i in groups:
         # mod1 + shift + letter of group = switch to & move focused window to group
         #Key([mod, "shift"], i.name, lazy.window.togroup(i.name)),
         Key([mod, "shift"], i.name, lazy.function(change_abstract_window_state, state=2, group_name=i.name)),
-    ])
+        ])
+    layout_style = {
+            'margin': 0,
+            'border_width': 1,
+            'border_normal': '#FF586E75',
+            #'border_focus': '#FF2AA198',
+            'border_focus': '#859900',
+            'single_border_width': 0,
+            'single_margin': 0,
 
-layout_style = {
-    'margin': 0,
-    'border_width': 1,
-    'border_normal': '#FF586E75',
-    #'border_focus': '#FF2AA198',
-    'border_focus': '#859900',
-    'single_border_width': 0,
-    'single_margin': 0,
+            }
 
-}
+    layouts = [
+            layout.MonadTall(**layout_style),
+            layout.Max(),
+            layout.MonadWide(**layout_style),
+            layout.RatioTile(**layout_style),
+            layout.VerticalTile(**layout_style),
+            layout.Floating(**layout_style),
+            #    layout.Stack(num_stacks=2),
+            #    layout.Bsp(),
+            #    layout.Columns(),
+            #    layout.Matrix(),
+            #    layout.Tile(),
+            #    layout.TreeTab(),
+            #    layout.Zoomy(),
+            ]
 
-layouts = [
-    layout.MonadTall(**layout_style),
-    layout.Max(),
-    layout.MonadWide(**layout_style),
-    layout.RatioTile(**layout_style),
-    layout.VerticalTile(**layout_style),
-    layout.Floating(**layout_style),
-#    layout.Stack(num_stacks=2),
-#    layout.Bsp(),
-#    layout.Columns(),
-#    layout.Matrix(),
-#    layout.Tile(),
-#    layout.TreeTab(),
-#    layout.Zoomy(),
-]
+    widget_defaults = dict(
+            #foreground='#93A1A1',
+            #foreground='#DFD9B6',
+            foreground='#DAD4B1',
+            #foreground='#839496',
+            font='sans',
+            fontsize=12,
+            padding=3,
+            )
+    extension_defaults = widget_defaults.copy()
 
-widget_defaults = dict(
-    #foreground='#93A1A1',
-    #foreground='#DFD9B6',
-    foreground='#DAD4B1',
-    #foreground='#839496',
-    font='sans',
-    fontsize=12,
-    padding=3,
-)
-extension_defaults = widget_defaults.copy()
+keys.append(Key([mod, "control"], "space", lazy.window.toggle_floating()))
+keys.append(Key([mod, "shift"], "space", lazy.layout.command_sublayout('*', 'nextarrangement')))
+
+for key, x, y in [("Left", -10, 0), 
+                  ("Right", 10, 0), 
+                  ("Up", 0, -10),
+                  ("Down", 0, 10)]:
+    keys.append(Key([mod, "control"], key, lazy.window.move_floating(x, y)))
+    keys.append(Key([mod, "shift"], key, lazy.window.resize_floating(x, y)))
+    keys.append(Key([mod, "mod1"], key, lazy.window.move_to_screen_edge(key)))
 
 bar_style = {
-    'background': '#073642',
-    'foreground': '#FFFFFF',
-    #'foreground': '#586E75',
-    #'border_width': 10,
-    #'border_normal': '#FF586E75',
-    #'opacity': 0.7,
-}
+        'background': '#073642',
+        'foreground': '#FFFFFF',
+        #'foreground': '#586E75',
+        #'border_width': 10,
+        #'border_normal': '#FF586E75',
+        #'opacity': 0.7,
+        }
 
 group_box_style = {
-    #foreground='#657B83',
-    'inactive': '#586e75',
-    'highlight_method': 'line',
-    #'this_current_screen_border': '#268BD2',
-    #'this_current_screen_border': '#859900',
-    #'this_current_screen_border': '#2AA198',
-    'this_current_screen_border': '#2AA198',
-    #'active': '#93A1A1',
-    'active': '#DAD4B1',
-    'rounded': False,
-    'border_width': 1,
-    'disable_drag': True,
-    'spacing': 0,
-    'highlight_color': '073642',
-#    'margin': 1,
-}
+        #foreground='#657B83',
+        'inactive': '#586e75',
+        'highlight_method': 'line',
+        #'this_current_screen_border': '#268BD2',
+        #'this_current_screen_border': '#859900',
+        #'this_current_screen_border': '#2AA198',
+        'this_current_screen_border': '#2AA198',
+        #'active': '#93A1A1',
+        'active': '#DAD4B1',
+        'rounded': False,
+        'border_width': 1,
+        'disable_drag': True,
+        'spacing': 0,
+        'highlight_color': '073642',
+        #    'margin': 1,
+        }
 
 screens = [
-    Screen(
-        bottom=bar.Bar(
-            [
-                widget.CurrentLayoutIcon(scale=0.8),
-                widget.GroupBox(**group_box_style),
-                widget.Prompt(),
-                widget.WindowName(),
-                bitmex_widget,
-                widget.Systray(),
-                widget.Clock(format='%d/%m/%Y %a %H:%M'),
-            ],
-            24,
-            **bar_style,
-        ),
-    ),
-    Screen(
-        bottom=bar.Bar(
-            [
-                widget.CurrentLayoutIcon(scale=0.8),
-                widget.GroupBox(**group_box_style),
-                widget.Prompt(),
-                widget.WindowName(),
-                bitmex_widget,
-                widget.Systray(),
-                widget.Clock(format='%d/%m/%Y %a %H:%M'),
-            ],
-            24,
-            **bar_style,
-        ),
-    ),
-]
+        Screen(
+            bottom=bar.Bar(
+                [
+                    widget.CurrentLayoutIcon(scale=0.8),
+                    widget.GroupBox(**group_box_style),
+                    widget.Prompt(),
+                    widget.WindowName(),
+                    bitmex_widget,
+                    widget.Systray(),
+                    work_hours_widget,
+                    widget.Clock(format='%d/%m/%Y %a %H:%M'),
+                    ],
+                24,
+                **bar_style,
+                ),
+            ),
+        Screen(
+            bottom=bar.Bar(
+                [
+                    widget.CurrentLayoutIcon(scale=0.8),
+                    widget.GroupBox(**group_box_style),
+                    widget.Prompt(),
+                    widget.WindowName(),
+                    bitmex_widget,
+                    widget.Systray(),
+                    work_hours_widget,
+                    widget.Clock(format='%d/%m/%Y %a %H:%M'),
+                    ],
+                24,
+                **bar_style,
+                ),
+            ),
+        ]
 
 # Drag floating layouts.
 mouse = [
-    Drag([mod], "Button1", lazy.window.set_position_floating(),
-         start=lazy.window.get_position()),
-    Drag([mod], "Button3", lazy.window.set_size_floating(),
-         start=lazy.window.get_size()),
-    Click([mod], "Button2", lazy.window.bring_to_front())
-]
+        Drag([mod], "Button1", lazy.window.set_position_floating(),
+            start=lazy.window.get_position()),
+        Drag([mod], "Button3", lazy.window.set_size_floating(),
+            start=lazy.window.get_size()),
+        Click([mod], "Button2", lazy.window.bring_to_front())
+        ]
 
 dgroups_key_binder = None
 dgroups_app_rules = []  # type: List
@@ -303,29 +340,29 @@ follow_mouse_focus = True
 bring_front_click = False
 cursor_warp = False
 float_rules=[
-    {'wmclass': 'confirm'},
-    {'wmclass': 'dialog'},
-    {'wmclass': 'download'},
-    {'wmclass': 'error'},
-    {'wmclass': 'file_progress'},
-    {'wmclass': 'notification'},
-    {'wmclass': 'splash'},
-    {'wmclass': 'toolbar'},
-    {'wmclass': 'confirmreset'},  # gitk
-    {'wmclass': 'makebranch'},  # gitk
-    {'wmclass': 'maketag'},  # gitk
-    {'wname': 'branchdialog'},  # gitk
-    {'wname': 'pinentry'},  # GPG key password entry
-    {'wmclass': 'ssh-askpass'},  # ssh-askpass
-    {'wmclass': 'brave-browser'},
-]
+        {'wmclass': 'confirm'},
+        {'wmclass': 'dialog'},
+        {'wmclass': 'download'},
+        {'wmclass': 'error'},
+        {'wmclass': 'file_progress'},
+        {'wmclass': 'notification'},
+        {'wmclass': 'splash'},
+        {'wmclass': 'toolbar'},
+        {'wmclass': 'confirmreset'},  # gitk
+        {'wmclass': 'makebranch'},  # gitk
+        {'wmclass': 'maketag'},  # gitk
+        {'wname': 'branchdialog'},  # gitk
+        {'wname': 'pinentry'},  # GPG key password entry
+        {'wmclass': 'ssh-askpass'},  # ssh-askpass
+        {'wmclass': 'brave-browser'},
+        ]
 
 floating_layout_style = {
-    'float_rules': float_rules,
-    'border_width': 0,
-    'border_normal': '#000000',
-    'border_focus': '#007ACC',
-}
+        'float_rules': float_rules,
+        'border_width': 0,
+        'border_normal': '#000000',
+        'border_focus': '#007ACC',
+        }
 
 floating_layout = layout.Floating(**floating_layout_style)
 auto_fullscreen = True
