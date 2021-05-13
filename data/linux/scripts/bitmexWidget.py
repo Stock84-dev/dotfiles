@@ -22,6 +22,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+#NOTE: websocket-client v0.56 required
 import websocket
 import threading
 import time
@@ -35,7 +37,7 @@ from bitmex_websocket.constants import InstrumentChannels
 from bitmex_websocket import Instrument
 import ccxt
 
-class BitmexWidget(base.ThreadedPollText):
+class BitmexWidget(base.InLoopPollText):
 
     def get_average(self, series):
         sum = 0
@@ -125,7 +127,7 @@ class BitmexWidget(base.ThreadedPollText):
         self.tick()
 
     def __init__(self, num_of_decimals=1, **config):
-        base.ThreadedPollText.__init__(self, **config)
+        base.InLoopPollText.__init__(self, "sample text", **config)
         self.update_interval = 1000000
         self.exception = None
 

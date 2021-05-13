@@ -103,11 +103,13 @@ fn main() -> Result<()> {
         load_and_show(&mut reader, Duration::days(7), now)?;
     } else {
         if let Some(start_date) = &args.start_date {
-            let start_date = DateTime::<Local>::from_str(&start_date)?.naive_local();
-            let end_date = match &args.start_date {
-                Some(date) => chrono::DateTime::<Local>::from_str(date)?.naive_local(),
+            let start_date = NaiveDate::parse_from_str(&start_date, "%d.%m.%Y")?.and_hms(0,0,0);
+            let end_date = match &args.end_date {
+                Some(date) => NaiveDate::parse_from_str(date, "%d.%m.%Y")?.and_hms(0,0,0),
                 None => now,
             };
+            println!("{:#?}", start_date);
+            println!("{:#?}", end_date);
             load_and_show(&mut reader, end_date - start_date, end_date)?;
         }
         else {
