@@ -216,7 +216,7 @@ for i in groups:
     layout_style = {
             'margin': 0,
             'border_width': 1,
-            'border_normal': '#FF586E75',
+            'border_normal': '#002B36',
             #'border_focus': '#FF2AA198',
             'border_focus': '#859900',
             'single_border_width': 0,
