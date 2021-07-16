@@ -68,7 +68,7 @@ HIST_STAMPS="dd.mm.yyyy"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(vi-mode)
+plugins=(wakatime)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -262,14 +262,35 @@ bindkey '^e' edit-command-line
 # Load zsh-syntax-highlighting; should be last.
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh 2>/dev/null
 
+bindkey -v
+bindkey '^R' history-incremental-search-backward
 export EDITOR=vim
 export VISUAL=vim
+export PATH="/home/stock/.config/coc/extensions/coc-rust-analyzer-data:$PATH"
 # using vim sa manpager https://github.com/gotbletu/shownotes/blob/master/vim_neovim_manpager.md
 export MANPAGER="/bin/sh -c \"col -b | vim --not-a-term -c 'set ft=man ts=8 nomod nolist noma' -\""
 # setting how many characters should vim display as manpager
 export MANWIDTH=94
-export RUST_BACKTRACE=1
-alias v="vim"
+export RUST_BACKTRACE=full
+# export RUSTC_WRAPPER=sccache
+alias vim="nvim"
+alias v="nvim"
+alias p="cd /home/stock/ssd/projects/the_matrix/the_matrix && nvim . && cd -"
 alias r="ranger"
 alias b="upower -i /org/freedesktop/UPower/devices/battery_CMB1"
 alias :q="exit"
+alias cb="cargo build"
+alias cr="cargo run"
+alias ct="cargo test"
+alias ca="cargo add"
+alias cc="cargo check"
+alias ce="cargo expand"
+alias cw="cargo watch"
+alias cbr="cargo build --release"
+alias crr="cargo run --release"
+alias w="curl wttr.in/Zagreb"
+source ~/data/linux/scripts/gtm-plugin.sh
+c ()
+{
+	curl rate.sx/$1
+}

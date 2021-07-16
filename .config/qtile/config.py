@@ -25,13 +25,14 @@
 # SOFTWARE.
 import sys
 sys.path.append('/home/stock/data/linux/scripts/')
-import bitmexWidget
+#import bitmexWidget
 from datetime import datetime
 from subprocess import call
 import threading
 from libqtile.config import Key, Screen, Group, Drag, Click, ScratchPad, DropDown, Match
 from libqtile.command import lazy
 from libqtile import layout, bar, widget
+from libqtile import hook
 
 from typing import List  # noqa: F401
 
@@ -40,7 +41,7 @@ def main(qtile):
     qtile.cmd_debug()
 
 mod = "mod4"
-bitmex_widget = bitmexWidget.BitmexWidget()
+#bitmex_widget = bitmexWidget.BitmexWidget()
 work_hours_widget = widget.TextBox("", bar.CALCULATED, **{'background': "#073642"});
 
 def toscreen(qtile, group_name):
@@ -53,11 +54,15 @@ def toscreen(qtile, group_name):
                 return
 
 def on_window_showed(qtile):
-    if qtile.current_window.match(wmclass="brave-browser"):
-        if qtile.current_window.height < qtile.current_screen.height:
-            qtile.current_window.cmd_resize_floating(0, 69)
+    # they fucking changed something and now when window shows there is slight chance that it 
+    # doesn't have an attribute which kills whole session
+    # to be safe I am commenting this
+    #if qtile.current_window.get_wm_class()[1] == "brave-browser":
+    #    if qtile.current_window.height < qtile.current_screen.height:
+    #        qtile.current_window.cmd_resize_floating(0, 69)
 
-        qtile.current_window.cmd_set_position_floating(0, -69)
+    #    qtile.current_window.cmd_set_position_floating(0, -69)
+    pass
 
 def change_abstract_window_state(qtile, state, group_name=""):
     if state == 1: #specific group showed
@@ -81,7 +86,8 @@ def brave_hide_bar(qtile):
     #qtile.current_screen.group.windows[0].set_position_floating(0, 50)
 
 def shutdown(qtile):
-    bitmex_widget.close()
+    #bitmex_widget.close()
+    pass
 #    qtile.cmd_shutdown()
 #    threading.Thread(target=lambda: call(["pkill", "qtile"])).start()
 
@@ -118,10 +124,11 @@ group_matches = [
 
     [Match(wm_class=[
         "VirtualBox Machine",
+        "code-oss"
     ]), ],
 
     [Match(wm_class=[
-         "jetbrains-pycharm-ce",
+         "jetbrains-clion",
          "java-lang-Thread"
     ]), ],
 
@@ -297,7 +304,7 @@ screens = [
                     widget.GroupBox(**group_box_style),
                     widget.Prompt(),
                     widget.WindowName(),
-                    bitmex_widget,
+                    #bitmex_widget,
                     widget.Systray(),
                     work_hours_widget,
                     widget.Clock(format='%d/%m/%Y %a %H:%M'),
@@ -313,7 +320,7 @@ screens = [
                     widget.GroupBox(**group_box_style),
                     widget.Prompt(),
                     widget.WindowName(),
-                    bitmex_widget,
+                    #bitmex_widget,
                     widget.Systray(),
                     work_hours_widget,
                     widget.Clock(format='%d/%m/%Y %a %H:%M'),
@@ -356,6 +363,25 @@ float_rules=[
         {'wmclass': 'ssh-askpass'},  # ssh-askpass
         {'wmclass': 'brave-browser'},
         ]
+
+@hook.subscribe.client_new
+def float_pycharm(window):
+    wm_class = window.window.get_wm_class()
+    w_name = window.window.get_name()
+
+    if (wm_class == ("jetbrains-clion", "jetbrains-clion") and  w_name.startswith("Documentation - ")):
+        window.floating = True
+
+    #if (
+    #    (
+    #        wm_class == ("jetbrains-clion", "jetbrains-clion") and (w_name == "Tip of the Day" or w_name == "Settings" or w_name == " " or w_name.startswith("Documentation - "))
+    #    )
+    #    or (
+    #        wm_class == ("java-lang-Thread", "java-lang-Thread")
+    #        and w_name == "win0"
+    #    )
+    #):
+    #    window.floating = True
 
 floating_layout_style = {
         'float_rules': float_rules,

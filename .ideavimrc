@@ -1,3 +1,18 @@
 set easymotion
-nmap <C-j> <leader><leader>w 
-nmap <C-k> <leader><leader>b 
+set ideajoin
+set highlightedyank
+set number relativenumber
+set smartcase
+set ignorecase
+
+map <C-j> <leader><leader>w 
+map <C-k> <leader><leader>b 
+nmap <S-y> y$
+nmap <C-o> :action Back<CR>
+nmap <C-i> :action Forward<CR>
+nmap <C-s> :action GotoSuperMethod<CR>
+nmap gt :action GotoTypeDeclaration<CR>
+nmap <S-Space> :action GotoNextError<CR>
+nmap <leader>b :action ToggleLineBreakpoint<CR>
+
+"nmap gi :action FindUsages<CR>:action NextOccurence<CR>:action HideActiveWindow<CR>

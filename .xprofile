@@ -1,4 +1,5 @@
 #!/bin/bash
+# xscreensaver && sleep 1 && xscreensaver-command -lock &
 feh --randomize --bg-center ~/data/Pictures/wallpapers/* &
 # wal -i ~/data/Pictures/wallpapers -a 70 -b 000000 -q &
 ~/data/linux/scripts/keyboardLayout.sh us &
@@ -6,10 +7,11 @@ feh --randomize --bg-center ~/data/Pictures/wallpapers/* &
 sxhkd &
 imwheel -b 45 &
 xdotool key Num_Lock &
+~/data/linux/scripts/screensaver-disabler.sh &
 # ignoring pywall theme and using solarized
 #sleep 1 &&
 #xrdb .Xresources &
 # xmodmap ~/data/linux/scripts/xmodmap & # handled by keyboardLayout.sh
-# sleeping for 1 sec because wifi doesn't connect so fast and messes up browser
+# sleeping for x sec because wifi doesn't connect so fast and messes up browser
 sleep 7 && # 6 sec is enough for home
 brave &
