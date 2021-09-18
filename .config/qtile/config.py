@@ -29,6 +29,7 @@ sys.path.append('/home/stock/data/linux/scripts/')
 from datetime import datetime
 from subprocess import call
 import threading
+import os
 from libqtile.config import Key, Screen, Group, Drag, Click, ScratchPad, DropDown, Match
 from libqtile.command import lazy
 from libqtile import layout, bar, widget
@@ -128,9 +129,12 @@ group_matches = [
     ]), ],
 
     [Match(wm_class=[
-         "jetbrains-clion",
+         #"jetbrains-clion",
          "java-lang-Thread"
-    ]), ],
+         ],wm_instance_class=[
+         "jetbrains-clion",
+             ]
+    ), ],
 
     [Match(wm_class=[
     ], ), ],
@@ -362,26 +366,23 @@ float_rules=[
         {'wname': 'pinentry'},  # GPG key password entry
         {'wmclass': 'ssh-askpass'},  # ssh-askpass
         {'wmclass': 'brave-browser'},
+        {'wmclass': 'sun-awt-X11-XWindowPeer'},  # <----  pycharm popups
         ]
 
 @hook.subscribe.client_new
 def float_pycharm(window):
     wm_class = window.window.get_wm_class()
-    w_name = window.window.get_name()
+    wm_name = window.window.get_name()
+    #s = str(wm_class) + " " + wm_name
 
-    if (wm_class == ("jetbrains-clion", "jetbrains-clion") and  w_name.startswith("Documentation - ")):
-        window.floating = True
-
-    #if (
-    #    (
-    #        wm_class == ("jetbrains-clion", "jetbrains-clion") and (w_name == "Tip of the Day" or w_name == "Settings" or w_name == " " or w_name.startswith("Documentation - "))
-    #    )
-    #    or (
-    #        wm_class == ("java-lang-Thread", "java-lang-Thread")
-    #        and w_name == "win0"
-    #    )
-    #):
-    #    window.floating = True
+    #if (wm_class == ("jetbrains-clion", "jetbrains-clion") and  w_name.startswith("Documentation - ")):
+        #window.floating = True
+    # if we have multiple windows open from tool windows then, by default every other window will 
+    # go to group where tool window is, to prevent that we move it back to default group
+    # I won't be working on multiple projects at the same time so this is ok
+    if (wm_class[0] == "jetbrains-clion"):
+        #os.popen('notify-send "' + s + '"')
+        window.togroup(groups[2].name)
 
 floating_layout_style = {
         'float_rules': float_rules,
