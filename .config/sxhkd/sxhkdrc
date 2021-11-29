@@ -5,8 +5,9 @@
 # if we really need one keystroke
 #super + @Escape
 #	xdotoll key Escape
+# sleep is here so that neovim updates its window size
 super + 1 
-	alacritty -e vim -c :Calendar
+	alacritty -e zsh -c 'sleep 0.01 && nvim -c :Calendar'
 super + Return
 	alacritty
 super + q
@@ -14,22 +15,22 @@ super + q
 super + shift + q 
 	rofi -show window
 super + control + shift + w
-	feh --randomize --bg-center ~/data/Pictures/wallpapers/*
+	feh --randomize --bg-scale ~/data/Pictures/wallpapers/*
 #wal -i ~/data/Pictures/wallpapers/ -a 70 -b 000000 -q
 super + b
 	zathura "~/data/Documents/Documents/books/Flow_ The Psychology of Optimal Experience ( PDFDrive ) (1).epub"
 super + alt + c
 	alacritty -e sh -c "python ~/.config/qtile/config.py;$SHELL"
 super + control + c
-	alacritty -e vim ~/.config/qtile/config.py
+	alacritty -e zsh -c 'sleep 0.01 && nvim ~/.config/qtile/config.py'
 #super + shift + c
-#	alacritty -e vim ~/.config/sxhkd/sxhkdrc
+#	alacritty -e nvim ~/.config/sxhkd/sxhkdrc
 super + e
 	alacritty -e zsh -c ranger
 super + End
 	xscreensaver-command -lock
 super + control + End
-	alacritty -e vim -c :Calendar && alacritty -e vim ~/data/Documents/Documents/checklist.todo && /home/stock/data/linux/dotfiles/time_well_spent/target/release/time_well_spent --path ~/data/Documents/Documents/work_hours.csv --wtd && sleep 1 && xset dpms force off
+	alacritty -e zsh -c 'sleep 0.01 && nvim -c :Calendar & alacritty -e nvim ~/data/Documents/Documents/checklist.todo & /home/stock/data/linux/dotfiles/time_well_spent/target/release/time_well_spent --path ~/data/Documents/Documents/work_hours.csv --wtd & sleep 60 && xset dpms force off'
 super + alt + p
 	~/data/linux/scripts/pick_color.sh
 super + control + p
@@ -45,15 +46,15 @@ super + ctrl + d
 super + control + s
 	sxiv ~/data/Pictures/schedule.png
 super + t
-	alacritty -e vim ~/data/Documents/Documents/checklist.todo
+	alacritty -e zsh -c 'sleep 0.01 && nvim ~/data/Documents/Documents/checklist.todo'
 super + g
-	alacritty -e vim ~/data/Documents/Documents/GOALS
+	alacritty -e zsh -c 'sleep 0.01 && nvim ~/data/Documents/Documents/GOALS'
 super + v
 	virtualboxvm --startvm "Windows 10"
 super + shift + v
 	vboxmanage controlvm "Windows 10" savestate
 super + control + v
-	alacritty -e vim ~/.vimrc
+	alacritty -e zsh -c 'sleep 0.01 && nvim ~/.nvimrc'
 super + z 
 	morc_menu
 super + plus 
