@@ -1,21 +1,22 @@
-! making capslock escape
 clear lock
-keycode 66 = Escape 
-
-! swapping left super and left alt
-clear mod4
 clear mod1
-keycode 133 = Alt_L
+clear mod4
+clear mod5
+! making capslock escape
+keycode 66 = Escape 
+!add lock = Escape
+
+! right alt becomes left alt
+keycode 108 = Alt_L
+keysym h = h H Left
+keysym j = j J Down
+keysym k = k K Up
+keysym l = l L Right
+
+! left super becomes mode switch
+keycode 133 = Mode_switch
+! left alt becomes left super
 keycode 64 = Super_L
-add mod1 = Alt_L Alt_R
+add mod1 = Alt_L
 add mod4 = Super_L Super_R
-!
-!
-! Swap Caps_Lock and Control_L
-!
-!remove Lock = Caps_Lock
-!remove Control = Control_L
-!keysym Control_L = Caps_Lock
-!keysym Caps_Lock = Control_L
-!add Lock = Caps_Lock
-!add Control = Control_L
+add mod5 = Mode_switch

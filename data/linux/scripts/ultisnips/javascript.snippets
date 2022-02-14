@@ -1,0 +1,13 @@
+snippet skmap "Remap keybinds for surfing keys extension for web b" b
+map('"', '$1');
+map('$1', '$2');
+map('$2', '"');
+endsnippet
+
+
+snippet sksa "Add search alias for surfing keys" b
+addSearchAliasX('${1:alias}', '${2:name}', '${3:search url}', 's');
+mapkey('o$1', '#8Open Search with alias $1', function() {
+    Front.openOmnibar({type: "SearchEngine", extra: "$1"});
+});
+endsnippet

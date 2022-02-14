@@ -1,7 +1,28 @@
+const {
+    aceVimMap,
+    mapkey,
+    imap,
+    imapkey,
+    getClickableElements,
+    vmapkey,
+    map,
+    unmap,
+    cmap,
+    addSearchAlias,
+    removeSearchAlias,
+    tabOpenLink,
+    readText,
+    Clipboard,
+    Front,
+    Hints,
+    Visual,
+    RUNTIME
+} = api;
+
 parcelRequire=function(e,r,t,n){var i,o="function"==typeof parcelRequire&&parcelRequire,u="function"==typeof require&&require;function f(t,n){if(!r[t]){if(!e[t]){var i="function"==typeof parcelRequire&&parcelRequire;if(!n&&i)return i(t,!0);if(o)return o(t,!0);if(u&&"string"==typeof t)return u(t);var c=new Error("Cannot find module '"+t+"'");throw c.code="MODULE_NOT_FOUND",c}p.resolve=function(r){return e[t][1][r]||r},p.cache={};var l=r[t]=new f.Module(t);e[t][0].call(l.exports,p,l,l.exports,this)}return r[t].exports;function p(e){return f(p.resolve(e))}}f.isParcelRequire=!0,f.Module=function(e){this.id=e,this.bundle=f,this.exports={}},f.modules=e,f.cache=r,f.parent=o,f.register=function(r,t){e[r]=[function(e,r){r.exports=t},{}]};for(var c=0;c<t.length;c++)try{f(t[c])}catch(e){i||(i=e)}if(t.length){var l=f(t[t.length-1]);"object"==typeof exports&&"undefined"!=typeof module?module.exports=l:"function"==typeof define&&define.amd?define(function(){return l}):n&&(this[n]=l)}if(parcelRequire=f,i)throw i;return f}({"bCLS":[function(require,module,exports) {
 module.exports.categories={help:0,mouseClick:1,scroll:2,tabs:3,pageNav:4,sessions:5,searchSelectedWith:6,clipboard:7,omnibar:8,visualMode:9,vimMarks:10,settings:11,chromeURLs:12,proxy:13,misc:14,insertMode:15};
 },{}],"YOqM":[function(require,module,exports) {
-function e(e){return r(e)||n(e)||t()}function t(){throw new TypeError("Invalid attempt to spread non-iterable instance")}function n(e){if(Symbol.iterator in Object(e)||"[object Arguments]"===Object.prototype.toString.call(e))return Array.from(e)}function r(e){if(Array.isArray(e)){for(var t=0,n=new Array(e.length);t<e.length;t++)n[t]=e[t];return n}}function i(e,t,n){return t in e?Object.defineProperty(e,t,{value:n,enumerable:!0,configurable:!0,writable:!0}):e[t]=n,e}function a(e,t){return u(e)||c(e,t)||o()}function o(){throw new TypeError("Invalid attempt to destructure non-iterable instance")}function c(e,t){if(Symbol.iterator in Object(e)||"[object Arguments]"===Object.prototype.toString.call(e)){var n=[],r=!0,i=!1,a=void 0;try{for(var o,c=e[Symbol.iterator]();!(r=(o=c.next()).done)&&(n.push(o.value),!t||n.length!==t);r=!0);}catch(u){i=!0,a=u}finally{try{r||null==c.return||c.return()}finally{if(i)throw a}}return n}}function u(e){if(Array.isArray(e))return e}var l=require("./help"),f=l.categories,d={getCurrentLocation:function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:"href";return"undefined"==typeof window?"":window.location[e]},escape:function(e){return String(e).replace(/[&<>"'`=\/]/g,function(e){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;","/":"&#x2F;","`":"&#x60;","=":"&#x3D;"}[e]})},createSuggestionItem:function(e){var t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{},n=document.createElement("li");return n.innerHTML=e,{html:n.outerHTML,props:t}},createURLItem:function(e,t){var n=e,r=t;return(!(arguments.length>2&&void 0!==arguments[2])||arguments[2])&&(n=d.escape(n),r=new URL(r).toString()),d.createSuggestionItem('\n      <div class="title">'.concat(n,'</div>\n      <div class="url">').concat(r,"</div>\n    "),{url:r})},isRectVisibleInViewport:function(e){return e.height>0&&e.width>0&&e.bottom>=0&&e.right>=0&&e.top<=(window.innerHeight||document.documentElement.clientHeight)&&e.left<=(window.innerWidth||document.documentElement.clientWidth)},isElementInViewport:function(e){return e.offsetHeight>0&&e.offsetWidth>0&&!e.getAttribute("disabled")&&d.isRectVisibleInViewport(e.getBoundingClientRect())},rmMaps:function(e){"undefined"!=typeof unmap&&e.forEach(function(e){return unmap(e)})},rmSearchAliases:function(e){return Object.entries(e).forEach(function(e){var t=a(e,2),n=t[0],r=t[1];"undefined"!=typeof removeSearchAliasX&&r.forEach(function(e){return removeSearchAliasX(e,n)})})},processMaps:function(t,n,r){if("undefined"!=typeof map&&"undefined"!=typeof mapkey){var o=Object.entries(n).flatMap(function(e){var n=a(e,2),r=n[0];return n[1].flatMap(function(e){return i({},e,t[r])})}),c=Object.assign.apply(Object,[{},t].concat(e(o)));Object.entries(c).forEach(function(e){var t=a(e,2),n=t[0];return t[1].forEach(function(e){var t=e.alias,i=e.callback,a=e.leader,o=void 0===a?"global"===n?"":r:a,c=e.category,u=void 0===c?f.misc:c,l=e.description,d=void 0===l?"":l,s={},p="".concat(o).concat(t);if("global"!==n){var m=n.replace(".","\\.");s.domain=new RegExp("^http(s)?://(([a-zA-Z0-9-_]+\\.)*)(".concat(m,")(/.*)?"))}var h="#".concat(u," ").concat(d);void 0!==e.map?map(t,e.map):mapkey(p,h,i,s)})})}},processCompletions:function(e,t){return Object.values(e).forEach(function(e){"undefined"!=typeof Front&&"undefined"!=typeof addSearchAliasX&&"undefined"!=typeof mapkey&&(addSearchAliasX(e.alias,e.name,e.search,t,e.compl,e.callback),mapkey("".concat(t).concat(e.alias),"#8Search ".concat(e.name),function(){return Front.openOmnibar({type:"SearchEngine",extra:e.alias})}),mapkey("c".concat(t).concat(e.alias),"#8Search ".concat(e.name," with clipboard contents"),function(){Clipboard.read(function(t){Front.openOmnibar({type:"SearchEngine",pref:t.data,extra:e.alias})})}))})},addSettings:function(e){"undefined"!=typeof settings&&Object.assign(settings,e)}};module.exports=d;
+function e(e){return r(e)||n(e)||t()}function t(){throw new TypeError("Invalid attempt to spread non-iterable instance")}function n(e){if(Symbol.iterator in Object(e)||"[object Arguments]"===Object.prototype.toString.call(e))return Array.from(e)}function r(e){if(Array.isArray(e)){for(var t=0,n=new Array(e.length);t<e.length;t++)n[t]=e[t];return n}}function i(e,t,n){return t in e?Object.defineProperty(e,t,{value:n,enumerable:!0,configurable:!0,writable:!0}):e[t]=n,e}function a(e,t){return u(e)||c(e,t)||o()}function o(){throw new TypeError("Invalid attempt to destructure non-iterable instance")}function c(e,t){if(Symbol.iterator in Object(e)||"[object Arguments]"===Object.prototype.toString.call(e)){var n=[],r=!0,i=!1,a=void 0;try{for(var o,c=e[Symbol.iterator]();!(r=(o=c.next()).done)&&(n.push(o.value),!t||n.length!==t);r=!0);}catch(u){i=!0,a=u}finally{try{r||null==c.return||c.return()}finally{if(i)throw a}}return n}}function u(e){if(Array.isArray(e))return e}var l=require("./help"),f=l.categories,d={getCurrentLocation:function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:"href";return"undefined"==typeof window?"":window.location[e]},escape:function(e){return String(e).replace(/[&<>"'`=\/]/g,function(e){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;","/":"&#x2F;","`":"&#x60;","=":"&#x3D;"}[e]})},createSuggestionItem:function(e){var t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{},n=document.createElement("li");return n.innerHTML=e,{html:n.outerHTML,props:t}},createURLItem:function(e,t){var n=e,r=t;return(!(arguments.length>2&&void 0!==arguments[2])||arguments[2])&&(n=d.escape(n),r=new URL(r).toString()),d.createSuggestionItem('\n      <div class="title">'.concat(n,'</div>\n      <div class="url">').concat(r,"</div>\n    "),{url:r})},isRectVisibleInViewport:function(e){return e.height>0&&e.width>0&&e.bottom>=0&&e.right>=0&&e.top<=(window.innerHeight||document.documentElement.clientHeight)&&e.left<=(window.innerWidth||document.documentElement.clientWidth)},isElementInViewport:function(e){return e.offsetHeight>0&&e.offsetWidth>0&&!e.getAttribute("disabled")&&d.isRectVisibleInViewport(e.getBoundingClientRect())},rmMaps:function(e){"undefined"!=typeof unmap&&e.forEach(function(e){return unmap(e)})},rmSearchAliases:function(e){return Object.entries(e).forEach(function(e){var t=a(e,2),n=t[0],r=t[1];"undefined"!=typeof removeSearchAliasX&&r.forEach(function(e){return removeSearchAliasX(e,n)})})},processMaps:function(t,n,r){if("undefined"!=typeof map&&"undefined"!=typeof mapkey){var o=Object.entries(n).flatMap(function(e){var n=a(e,2),r=n[0];return n[1].flatMap(function(e){return i({},e,t[r])})}),c=Object.assign.apply(Object,[{},t].concat(e(o)));Object.entries(c).forEach(function(e){var t=a(e,2),n=t[0];return t[1].forEach(function(e){var t=e.alias,i=e.callback,a=e.leader,o=void 0===a?"global"===n?"":r:a,c=e.category,u=void 0===c?f.misc:c,l=e.description,d=void 0===l?"":l,s={},p="".concat(o).concat(t);if("global"!==n){var m=n.replace(".","\\.");s.domain=new RegExp("^http(s)?://(([a-zA-Z0-9-_]+\\.)*)(".concat(m,")(/.*)?"))}var h="#".concat(u," ").concat(d);void 0!==e.map?map(t,e.map):mapkey(p,h,i,s)})})}},processCompletions:function(e,t){return Object.values(e).forEach(function(e){"undefined"!=typeof Front&&"undefined"!=typeof addSearchAlias&&"undefined"!=typeof mapkey&&(addSearchAlias(e.alias,e.name,e.search,t,e.compl,e.callback),mapkey("".concat(t).concat(e.alias),"#8Search ".concat(e.name),function(){return Front.openOmnibar({type:"SearchEngine",extra:e.alias})}),mapkey("c".concat(t).concat(e.alias),"#8Search ".concat(e.name," with clipboard contents"),function(){Clipboard.read(function(t){Front.openOmnibar({type:"SearchEngine",pref:t.data,extra:e.alias})})}))})},addSettings:function(e){"undefined"!=typeof settings&&Object.assign(settings,e)}};module.exports=d;
 },{"./help":"bCLS"}],"LRRq":[function(require,module,exports) {
 module.exports=["400","401","402","403","404","405","406","407","408","409","410","411","412","413","414","415","416","417","418","419","420","421","422","423","424","425","426","427","428","429","430","431","500","501","502","503","504","505","506","507","508","509","510","511","about","access","account","admin","anonymous","any","api","apps","attributes","auth","billing","blob","blog","bounty","branches","business","businesses","c","cache","case-studies","categories","central","certification","changelog","cla","cloud","codereview","collection","collections","comments","commit","commits","community","companies","compare","contact","contributing","cookbook","coupons","customer","customers","dashboard","dashboards","design","develop","developer","diff","discover","discussions","docs","downloads","downtime","editor","editors","edu","enterprise","events","explore","featured","features","files","fixtures","forked","garage","ghost","gist","gists","graphs","guide","guides","help","help-wanted","home","hooks","hosting","hovercards","identity","images","inbox","individual","info","integration","interfaces","introduction","investors","issues","jobs","join","journal","journals","lab","labs","languages","launch","layouts","learn","legal","library","linux","listings","lists","login","logos","logout","mac","maintenance","malware","man","marketplace","mention","mentioned","mentioning","mentions","migrating","milestones","mine","mirrors","mobile","navigation","network","new","news","none","nonprofit","nonprofits","notices","notifications","oauth","offer","open-source","organisations","organizations","orgs","pages","partners","payments","personal","plans","plugins","popular","popularity","posts","press","pricing","professional","projects","pulls","raw","readme","recommendations","redeem","releases","render","reply","repositories","resources","restore","revert","save-net-neutrality","saved","scraping","search","security","services","sessions","settings","shareholders","shop","showcases","signin","signup","site","spam","ssh","staff","starred","stars","static","status","statuses","storage","store","stories","styleguide","subscriptions","suggest","suggestion","suggestions","support","suspended","talks","teach","teacher","teachers","teaching","teams","ten","terms","timeline","topic","topics","tos","tour","train","training","translations","tree","trending","updates","username","users","visualization","w","watching","wiki","windows","works-with","www0","www1","www2","www3","www4","www5","www6","www7","www8","www9"];
 },{}],"x85g":[function(require,module,exports) {
@@ -20,38 +41,43 @@ function a(a,n){return c(a)||e(a,n)||t()}function t(){throw new TypeError("Inval
 var e=require("./util"),s=require("./keys"),i=require("./completions");e.addSettings({hintAlign:"left",omnibarSuggestionTimeout:500,richHintsForKeystroke:1,theme:"\n    /* Disable RichHints CSS animation */\n    .expandRichHints {\n        animation: 0s ease-in-out 1 forwards expandRichHints;\n    }\n    .collapseRichHints {\n        animation: 0s ease-in-out 1 forwards collapseRichHints;\n    }\n  "}),"undefined"!=typeof Hints&&(Hints.characters="qwertasdfgzxcvb");var a="<Space>",n="a";e.rmMaps(s.unmaps.mappings),e.rmSearchAliases(s.unmaps.searchAliases),e.processMaps(s.maps,s.aliases,a),e.processCompletions(i,n),module.exports={siteleader:a,searchleader:n};
 },{"./util":"YOqM","./keys":"BSXI","./completions":"HkY7"}]},{},["Nwkc"], null)
 //# sourceMappingURL=/conf.js.map
-
 settings.theme = `
 .sk_theme {
-background: #000a14dd;
-color: #4f97d7;
+    font-family: Input Sans Condensed, Charcoal, sans-serif;
+    font-size: 10pt;
+    background: #24272e;
+    color: #abb2bf;
 }
 .sk_theme tbody {
-color: #292d;
+    color: #fff;
 }
 .sk_theme input {
-color: #d9dce0;
+    color: #d0d0d0;
 }
 .sk_theme .url {
-color: #2d9574;
+    color: #61afef;
 }
 .sk_theme .annotation {
-color: #a31db1;
+    color: #56b6c2;
 }
 .sk_theme .omnibar_highlight {
-color: #333;
-background: #ffff00aa;
+    color: #528bff;
 }
-.sk_theme #sk_omnibarSearchResult ul>li:nth-child(odd) {
-background: #5d4d7a55;
+.sk_theme .omnibar_timestamp {
+    color: #e5c07b;
 }
-.sk_theme #sk_omnibarSearchResult ul>li.focused {
-background: #5d4d7aaa;
+.sk_theme .omnibar_visitcount {
+    color: #98c379;
 }
-.sk_theme #sk_omnibarSearchResult .omnibar_folder {
-color: #a31db1;
+.sk_theme #sk_omnibarSearchResult ul li:nth-child(odd) {
+    background: #303030;
 }
-`;
+.sk_theme #sk_omnibarSearchResult ul li.focused {
+    background: #3e4452;
+}
+#sk_status, #sk_find {
+    font-size: 20pt;
+}`;
 
 map('"', 'h');
 map('h', 'S'); // go back
@@ -69,62 +95,61 @@ map('"', 'k');
 map('k', 'e'); // scroll half page up
 map('e', '"'); // scroll up
 
-map('"', 't');
-map('t', 'T'); // open tab hints 
-map('<Ctrl-q>', '"'); // open omni bar in tab mode 
+map('J', 'E');
+map('K', 'R');
 
-mapkey('T', 'Choose a tab with omnibar', function() {
+mapkey('<Ctrl-p>', 'Choose a tab with omnibar', function() {
     Front.openOmnibar({type: "Tabs"});
 });
 
-addSearchAliasX('w', 'Wikipedia', 'https://en.wikipedia.org/w/index.php?search=', 's', 'https://en.wikipedia.org/w/api.php?action=opensearch&search=', function(response) {
+addSearchAlias('w', 'Wikipedia', 'https://en.wikipedia.org/w/index.php?search=', 's', 'https://en.wikipedia.org/w/api.php?action=opensearch&search=', function(response) {
 	var res = JSON.parse(response.text);
 	return res[1];
 });
 mapkey('ow', '#8Open Search with alias wiki', function() {
     Front.openOmnibar({type: "SearchEngine", extra: "w"});
 });
-addSearchAliasX('gh', 'GitHub', 'https://github.com/search?q=', 's');
+addSearchAlias('gh', 'GitHub', 'https://github.com/search?q=', 's');
 mapkey('ogh', '#8Open Search with alias gh', function() {
     Front.openOmnibar({type: "SearchEngine", extra: "gh"});
 });
-addSearchAliasX('se', 'Stack Exchange', 'https://askubuntu.com/search?q=', 's');
+addSearchAlias('se', 'Stack Exchange', 'https://askubuntu.com/search?q=', 's');
 mapkey('ose', '#8Open Search with alias se', function() {
     Front.openOmnibar({type: "SearchEngine", extra: "se"});
 });
-addSearchAliasX('g', 'Google', 'https://www.google.com/search?q=', 's');
+addSearchAlias('g', 'Google', 'https://www.google.com/search?q=', 's');
 mapkey('og', '#8Open Search with alias g', function() {
     Front.openOmnibar({type: "SearchEngine", extra: "g"});
 });
-addSearchAliasX('d', 'DuckDuckGo', 'https://duckduckgo.com/?q=', 's');
+addSearchAlias('d', 'DuckDuckGo', 'https://duckduckgo.com/?q=', 's');
 mapkey('od', '#8Open Search with alias d', function() {
     Front.openOmnibar({type: "SearchEngine", extra: "d"});
 });
-addSearchAliasX('b', 'Bing', 'https://www.bing.com/search?q=', 's');
+addSearchAlias('b', 'Bing', 'https://www.bing.com/search?q=', 's');
 mapkey('ob', '#8Open Search with alias b', function() {
     Front.openOmnibar({type: "SearchEngine", extra: "b"});
 });
 mapkey('q', '#8Open Search with alias b', function() {
     Front.openOmnibar({type: "SearchEngine", extra: "b"});
 });
-addSearchAliasX('aur', 'Arch Linux User Repository', 'https://aur.archlinux.org/packages/?O=0&K=', 's');
+addSearchAlias('aur', 'Arch Linux User Repository', 'https://aur.archlinux.org/packages/?O=0&K=', 's');
 mapkey('oaur', '#8Open Search with alias aur', function() {
     Front.openOmnibar({type: "SearchEngine", extra: "aur"});
 });
-addSearchAliasX('s', 'Stack Overflow', 'https://stackoverflow.com/search?q=', 's');
+addSearchAlias('s', 'Stack Overflow', 'https://stackoverflow.com/search?q=', 's');
 mapkey('os', '#8Open Search with alias s', function() {
     Front.openOmnibar({type: "SearchEngine", extra: "s"});
 });
-addSearchAliasX('aw', 'Arch Wiki', 'https://wiki.archlinux.org/index.php?search=', 's');
+addSearchAlias('aw', 'Arch Wiki', 'https://wiki.archlinux.org/index.php?search=', 's');
 mapkey('oaw', '#8Open Search with alias aw', function() {
     Front.openOmnibar({type: "SearchEngine", extra: "aw"});
 });
-addSearchAliasX('y', 'Youtube', 'https://www.youtube.com/results?search_query=', 's');
+addSearchAlias('y', 'Youtube', 'https://www.youtube.com/results?search_query=', 's');
 mapkey('oy', '#8Open Search with alias aw', function() {
     Front.openOmnibar({type: "SearchEngine", extra: "y"});
 });
 
-addSearchAliasX('t', 'Translate', 'https://translate.google.com/#view=home&op=translate&sl=en&tl=hr&text=', 's');
+addSearchAlias('t', 'Translate', 'https://translate.google.com/#view=home&op=translate&sl=en&tl=hr&text=', 's');
 mapkey('ot', '#8Open Search with alias t', function() {
     Front.openOmnibar({type: "SearchEngine", extra: "t"});
 });
