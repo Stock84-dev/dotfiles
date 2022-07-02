@@ -10,7 +10,7 @@ while :
 do
 	tput cup 1 11
 	current=`date +%s`
-	target=`date -d 1/1/2021 +%s`
+	target=`date -d 10/1/2022 +%s`
 	dif=$target-$current
 	echo -n "$((dif/86400)) days $(((dif/3600)%24)) hours $(((dif/60)%60)) minutes $((dif%60)) seconds"
 	sleep 1
