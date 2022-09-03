@@ -145,6 +145,7 @@ setopt INC_APPEND_HISTORY
 # rehash automatically so new files in $PATH are found for auto-completion
 zstyle ':completion:*' rehash true
 
+
 # Disable "flow control" which locks terminal when pressing ctrl-s
 stty -ixon
 
@@ -264,6 +265,8 @@ source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zs
 
 bindkey -v
 bindkey '^R' history-incremental-search-backward
+bindkey "^A" vi-beginning-of-line
+bindkey "^E" vi-end-of-line
 export EDITOR=vim
 export VISUAL=vim
 export PATH="/home/stock/.config/coc/extensions/coc-rust-analyzer-data:$PATH"
@@ -271,7 +274,10 @@ export PATH="/home/stock/.config/coc/extensions/coc-rust-analyzer-data:$PATH"
 export MANPAGER="/bin/sh -c \"col -b | vim --not-a-term -c 'set ft=man ts=8 nomod nolist noma' -\""
 # setting how many characters should vim display as manpager
 export MANWIDTH=94
+export ALPHAVANTAGE_API_KEY="LIEOIJJRT1NL3HX9"
 export RUST_BACKTRACE=full
+export RUST_LIB_BACKTRACE=1
+export RUST_LOG=trace
 # export RUSTC_WRAPPER=sccache
 alias vim="nvim"
 alias v="nvim"
@@ -289,8 +295,41 @@ alias cw="cargo watch"
 alias cbr="cargo build --release"
 alias crr="cargo run --release"
 alias w="curl wttr.in/Zagreb"
+alias gcd="git clone --depth=1"
 source ~/data/linux/scripts/gtm-plugin.sh
 c ()
 {
 	curl rate.sx/$1
+}
+
+# must evalueate last so that it picks up any configuration changes
+eval "$(mcfly init zsh)"
+
+export PATH=/home/stock/.tiup/bin:$PATH
+
+reboot () {
+	printf "Are you sure you want to reboot [y/n]"
+	read RESPONSE
+	if [ "$RESPONSE" = "y" ]
+	then
+		/usr/bin/reboot
+	else
+		echo "response not y"
+	fi
+}
+
+shutdown () {
+	if [ "$1" = "now" ] 
+	then
+		printf "Are you sure you want to shutdown [y/n]"
+		read RESPONSE
+		if [ "$RESPONSE" = "y" ]
+		then
+			/usr/bin/shutdown
+		else
+			echo "response not y"
+		fi
+	else
+		/usr/bin/shutdown "$@"
+	fi
 }
