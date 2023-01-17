@@ -45,8 +45,8 @@ fn show(entries: &HashMap<NaiveDate, f32>, duration: Duration) -> Result<()> {
     let total: f32 = entries.values().sum();
     let avg = total / duration.num_days() as f32;
     let cmd = Command::new("feedgnuplot")
-        .arg("--terminal")
-        .arg("x11")
+//        .arg("--terminal")
+//        .arg("x11")
         .arg("--with")
         .arg("boxes")
         .arg("--set")
@@ -82,6 +82,9 @@ fn load_data(reader: &mut Reader<File>, duration: Duration, end_date: NaiveDateT
     for entry in reader.deserialize() {
         let entry: Entry = entry?;
         let date = NaiveDateTime::parse_from_str(&entry.start_date, "%Y-%m-%dT%H:%M:%S")?;
+        if date > end_date {
+            continue;
+        }
 
         if end_date - date <= duration {
             entries.entry(date.date()).and_modify(|e| *e += entry.total_hours).or_insert(entry.total_hours);
