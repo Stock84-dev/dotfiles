@@ -98,7 +98,7 @@ map('e', '"'); // scroll up
 map('J', 'E');
 map('K', 'R');
 
-mapkey('<Ctrl-p>', 'Choose a tab with omnibar', function() {
+mapkey('<Ctrl-q>', 'Choose a tab with omnibar', function() {
     Front.openOmnibar({type: "Tabs"});
 });
 

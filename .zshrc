@@ -99,7 +99,9 @@ export VISUAL=vim
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+#
 
+fpath+=~/.zsh
 autoload -U compinit promptinit zsh-mime-setup
 compinit
 promptinit
@@ -274,7 +276,6 @@ export PATH="/home/stock/.config/coc/extensions/coc-rust-analyzer-data:$PATH"
 export MANPAGER="/bin/sh -c \"col -b | vim --not-a-term -c 'set ft=man ts=8 nomod nolist noma' -\""
 # setting how many characters should vim display as manpager
 export MANWIDTH=94
-export ALPHAVANTAGE_API_KEY="LIEOIJJRT1NL3HX9"
 export RUST_BACKTRACE=full
 export RUST_LIB_BACKTRACE=1
 export RUST_LOG=trace
@@ -285,15 +286,15 @@ alias p="cd /home/stock/ssd/projects/the_matrix/the_matrix && nvim . && cd -"
 alias r="ranger"
 alias b="upower -i /org/freedesktop/UPower/devices/battery_CMB1"
 alias :q="exit"
-alias cb="cargo build"
-alias cr="cargo run"
-alias ct="cargo test"
-alias ca="cargo add"
-alias cc="cargo check"
-alias ce="cargo expand"
-alias cw="cargo watch"
-alias cbr="cargo build --release"
-alias crr="cargo run --release"
+alias cb="cauwugo build"
+alias cr="cauwugo run"
+alias ct="cauwugo test"
+alias ca="cauwugo add"
+alias cc="cauwugo check"
+alias ce="cauwugo expand"
+alias cw="cauwugo watch"
+alias cbr="cauwugo build --release"
+alias crr="cauwugo run --release"
 alias w="curl wttr.in/Zagreb"
 alias gcd="git clone --depth=1"
 source ~/data/linux/scripts/gtm-plugin.sh
