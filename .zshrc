@@ -123,8 +123,6 @@ zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 # generate descriptions with magic
 zstyle ':completion:*' auto-description 'specify: %d'
-# autocompletion of command line switches for alias
-setopt completealiases
 
 DIRSTACKSIZE=20 # set limit for allowed dirs in pushd hist
 # 1st option always pushd after dir change
