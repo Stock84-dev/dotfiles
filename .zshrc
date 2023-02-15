@@ -68,7 +68,7 @@ HIST_STAMPS="dd.mm.yyyy"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(wakatime)
+plugins=(zsh-wakatime)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -78,8 +78,8 @@ source $ZSH/oh-my-zsh.sh
 
 # You may need to manually set your language environment
 export LANG=en_US.UTF-8
-export EDITOR=vim
-export VISUAL=vim
+export EDITOR=nvim
+export VISUAL=nvim
 
 # Preferred editor for local and remote sessions
 # if [[ -n $SSH_CONNECTION ]]; then
@@ -102,6 +102,7 @@ export VISUAL=vim
 #
 
 fpath+=~/.zsh
+fpath+=~/.zfunc
 autoload -U compinit promptinit zsh-mime-setup
 compinit
 promptinit
@@ -123,6 +124,8 @@ zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 # generate descriptions with magic
 zstyle ':completion:*' auto-description 'specify: %d'
+# autocompletion of command line switches for alias
+# setopt completealiases
 
 DIRSTACKSIZE=20 # set limit for allowed dirs in pushd hist
 # 1st option always pushd after dir change
@@ -263,16 +266,20 @@ bindkey '^e' edit-command-line
 # Load zsh-syntax-highlighting; should be last.
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh 2>/dev/null
 
+# Autoload env vars based on cwd
+eval "$(direnv hook zsh)"
+
 bindkey -v
 bindkey '^R' history-incremental-search-backward
 bindkey "^A" vi-beginning-of-line
 bindkey "^E" vi-end-of-line
-export EDITOR=vim
-export VISUAL=vim
+export EDITOR=nvim
+export VISUAL=nvim
 export PATH="/home/stock/.config/coc/extensions/coc-rust-analyzer-data:$PATH"
 # using vim sa manpager https://github.com/gotbletu/shownotes/blob/master/vim_neovim_manpager.md
 export MANPAGER="/bin/sh -c \"col -b | vim --not-a-term -c 'set ft=man ts=8 nomod nolist noma' -\""
 # setting how many characters should vim display as manpager
+export GCM_CREDENTIAL_STORE=secretservice
 export MANWIDTH=94
 export RUST_BACKTRACE=full
 export RUST_LIB_BACKTRACE=1

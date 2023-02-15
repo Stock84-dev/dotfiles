@@ -1,0 +1,18 @@
+{
+	"languageserver": {
+	  "rust": {
+	    "command": "rust-analyzer",
+	    "filetypes": ["rust"],
+	    "rootPatterns": ["Cargo.toml"]
+	  }
+	},
+	"rust-analyzer.cargo.runBuildScripts": true,
+	"rust-analyzer.cargo.loadOutDirsFromCheck": true,
+	"rust-analyzer.procMacro.enable": true,
+	"rust-analyzer.cargo.allFeatures": true,
+	"rust-analyzer.checkOnSave.allTargets": false,
+	"rust-analyzer.checkOnSave.allFeatures": true,
+	"rust-analyzer.completion.postfix.enable": false,
+	"rust-analyzer.lens.methodReferences": true,
+	"rust-analyzer.hoverActions.linksInHover": true
+}

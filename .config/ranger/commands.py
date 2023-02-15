@@ -36,3 +36,38 @@ class fzf_select(Command):
                 self.fm.cd(fzf_file)
             else:
                 self.fm.select_file(fzf_file)
+
+class new_cargo_lib(Command):
+    def execute(self):
+        import os
+        import subprocess
+        import threading
+        arg1 = self.rest(1)
+        subprocess.Popen(['/home/stock/data/linux/scripts/new_cargo_lib.sh', f'{arg1}'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).wait()
+        # a = self.fm.ui.__dir__()
+        # f = open("/tmp/ranger", "a")
+        # f.write(str(a))
+        # subprocess.Popen(['notify-send', f'"{a}"'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).wait()
+        self.fm.ui.initialize()
+        cwd = str(self.fm.thisdir) + f"/{arg1}/src/"
+        self.fm.cd(cwd)
+        # doesn't work: ui needs to update before the file can be opened
+        self.fm.move(right=1)
+        # def other(fm):
+        #     import time
+        #     time.sleep(1)
+        #     # self.fm.select_file(f'{arg1}.rs')
+        #     # self.fm.move(right=1)
+        #     fm.execute_console('move right=1')
+        # threading.Thread(target=other, args=(self.fm,)).start()
+
+class new_cargo_bin(Command):
+    def execute(self):
+        import os
+        import subprocess
+        arg1 = self.rest(1)
+        subprocess.Popen(['/home/stock/data/linux/scripts/new_cargo_bin.sh', f'{arg1}'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).wait()
+        cwd = self.fm.thisdir.path + f"/{arg1}/src/"
+        self.fm.cd(cwd)
+        self.fm.select_file(f'{arg1}.rs')
+        self.fm.execute_console('move right=1')
