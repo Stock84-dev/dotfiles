@@ -1,3 +1,4 @@
+-- INSTALL undo tree
 -- Install packer
 vim.cmd [[set termguicolors]]
 local install_path = vim.fn.stdpath 'data' .. '/site/pack/packer/start/packer.nvim'
@@ -7,7 +8,7 @@ if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
   vim.fn.system { 'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path }
   vim.cmd [[packadd packer.nvim]]
 end
-
+-- hello
 vim.g.crunch_result_type_append = 0
 vim.cmd [[
   let g:crunch_result_type_append = 0
@@ -28,7 +29,6 @@ require('packer').startup(function(use)
   use('jose-elias-alvarez/null-ls.nvim')
   use('MunifTanjim/prettier.nvim')
   use 'Stock84-dev/auto-save.nvim' -- fork of 'AnonymusRaccoon/auto-save.nvim' -- fork of 'Pocco81/auto-save.nvim'
-
   -- Rust specific:
   use {
     'saecki/crates.nvim',
@@ -43,7 +43,7 @@ require('packer').startup(function(use)
 
   -- Highlight color codes
   use "norcalli/nvim-colorizer.lua"
-  use "rebelot/kanagawa.nvim"
+  use { "rebelot/kanagawa.nvim", commit = "de7fb5f5de25ab45ec6039e33c80aeecc891dd92" }
   use 'xiyaowong/virtcolumn.nvim'
   -- Better <C-a>
   use 'monaqa/dial.nvim'
@@ -160,6 +160,8 @@ require('packer').startup(function(use)
   use 'wakatime/vim-wakatime'
   --use 'rmagatti/auto-session'
   use 'Shatur/neovim-session-manager'
+
+  use 'mbbill/undotree'
 
   -- Add custom plugins to packer from ~/.config/nvim/lua/custom/plugins.lua
   local has_plugins, plugins = pcall(require, 'custom.plugins')
@@ -325,8 +327,7 @@ require('kanagawa').setup({
     katanaGray   = "#717C7C",
   },
   overrides = {
-    -- Identifier = { fg = "#FF0000" }
-    Boolean = { bold = false },
+      Boolean = { bold = false },
   },
   theme = "default" -- Load "default" theme or the experimental "light" theme
 })
@@ -584,7 +585,7 @@ local servers = {
   -- clangd = {},
   -- gopls = {},
   -- pyright = {},
-  rust_analyzer = {},
+  -- rust_analyzer = {},
   -- tsserver = {},
 
   sumneko_lua = {
@@ -638,9 +639,12 @@ vim.cmd('exe "source " . fnamemodify("' .. sfile .. '", ":p:h") . "/after/main.v
 vim.cmd [[hi MyStockOperator ctermfg=lightyellow guifg=#B58900]]
 -- This must match some file but not all, it messes up Ranger
 vim.cmd [[autocmd VimEnter,BufNew rust,lua syn match MyStockOperator '+\|-\|_\|=\|\*\|&\|\^\|%\|\$\|#\|@\|!\|\~\|\,\|;\|:\|.']]
-vim.cmd [[autocmd VimEnter,BufNew * RainbowToggleOn]]
-vim.cmd [[highlight IndentBlanklineChar guifg=#073642 gui=nocombine]]
-vim.cmd [[autocmd VimEnter * ":RnvimrStartBackground<CR>"]]
+vim.cmd [[
+autocmd VimEnter,BufNew * RainbowToggleOn
+highlight IndentBlanklineChar guifg=#073642 gui=nocombine
+hi TelescopeResultsStruct guifg=#268bd2
+autocmd VimEnter * ":RnvimrStartBackground<CR>"
+]]
 
 
 require 'lightspeed'.setup {
@@ -760,7 +764,7 @@ local opts = {
       -- true for all crates.io and external crates, false only the local
       -- crates
       -- default: true
-      full = true,
+      full = false,
 
       -- List of backends found on: https://graphviz.org/docs/outputs/
       -- Is used for input validation and autocompletion
@@ -1253,3 +1257,56 @@ vim.g.coq_settings = {
   }
 }
 require("coq")
+
+vim.cmd [[
+if has("persistent_undo")
+   let target_path = expand('~/.undodir')
+
+    " create the directory and any parent directories
+    " if the location does not exist.
+    if !isdirectory(target_path)
+        call mkdir(target_path, "p", 0700)
+    endif
+
+    let &undodir=target_path
+    set undofile
+endif
+
+" Use the undo file
+set undofile
+
+" When loading a file, store the curent undo sequence
+augroup undo
+    autocmd!
+    autocmd BufReadPost,BufCreate,BufNewFile * let b:undo_saved = undotree()['seq_cur'] | let b:undo_warned = 0
+augroup end 
+
+" Remap the keys
+nnoremap u :call Undo()<Cr>u
+nnoremap <C-r> <C-r>:call Redo()<Cr>
+
+
+fun! Undo()
+    " Don't do anything if we can't modify the buffer or there's no filename
+    if !&l:modifiable || expand('%') == '' | return | endif
+
+    " Warn if the current undo sequence is lower (older) than whatever it was
+    " when opening the file
+    if !b:undo_warned && undotree()['seq_cur'] <= b:undo_saved
+        let b:undo_warned = 1
+        echohl ErrorMsg | echo 'WARNING! Using undofile!' | echohl None
+        sleep 1
+    endif
+endfun
+
+fun! Redo()
+    " Don't do anything if we can't modify the buffer or there's no filename
+    if !&l:modifiable || expand('%') == '' | return | endif
+
+    " Reset the warning flag
+    if &l:modifiable && b:undo_warned && undotree()['seq_cur'] >= b:undo_saved
+        let b:undo_warned = 0
+    endif
+endfun
+]]
+--end

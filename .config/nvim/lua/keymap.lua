@@ -1,4 +1,5 @@
 local M = {}
+local rt = require("rust-tools")
 local nmap = function(keys, func, desc)
   vim.keymap.set('n', keys, func, { desc = desc })
 end
@@ -61,7 +62,7 @@ vim.keymap.set('n', '<leader>op', ':Telescope repo list<CR>', { desc = '[O]pen [
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
-vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
+vim.keymap.set('n', '<C-m>', vim.diagnostic.open_float)
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
 
 local function show_documentation()
@@ -78,6 +79,14 @@ local function show_documentation()
 end
 
 vim.keymap.set('n', '<C-q>', show_documentation, { noremap = true, silent = true })
+
+local showSymbolFinder = function()
+  -- lowercase for simplicity :)
+  local lsp_symbols = vim.tbl_map(string.lower, vim.lsp.protocol.SymbolKind)
+  -- define a filter function to excl. undesired symbols
+  local symbols = vim.tbl_filter(function(symbol) return symbol ~= "field" and symbol ~= "enummember" and symbol ~= "object" end, lsp_symbols)
+  require('telescope.builtin').lsp_document_symbols { symbols = symbols, show_line = true }
+end
 
 
 -- LSP settings.
@@ -98,15 +107,17 @@ function Lsp_on_attach(_, bufnr)
   end
 
   nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
-  nmap('<leader>a', vim.lsp.buf.code_action, 'Code [A]ction')
+  nmap('<leader>a', rt.code_action_group.code_action_group, 'Code [A]ction')
+  -- nmap('<leader>a', vim.lsp.buf.code_action, 'Code [A]ction')
   --nmap('<C-q>', vim.lsp.buf.hover, 'Show documentation')
   nmap('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
   nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
   nmap('gi', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
   nmap('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
-  nmap('<C-e>', function() require('telescope.builtin').lsp_document_symbols { show_line = true } end,
+  nmap('<C-e>', showSymbolFinder,
+    -- nmap('<C-e>', function() require('telescope.builtin').lsp_document_symbols { show_line = true } end,
     '[D]ocument [S]ymbols')
-  nmap('<C-p>', function() require('telescope.builtin').lsp_workspace_symbols { show_line = true } end,
+  nmap('<C-p>', function() require('telescope.builtin').lsp_dynamic_workspace_symbols { show_line = true } end,
     'Workspace Symbols')
   nmap('<leader>di', function() require('telescope.builtin').diagnostics { bufnr = 0 } end, '[D][i]agnostics')
 
@@ -245,7 +256,7 @@ function M.rust_keymaps(_, bufnr)
   vim.keymap.set('n', '<leader>rr', require('rust-tools').runnables.runnables, { noremap = true })
   vim.keymap.set('n', '<leader>em', require('rust-tools').expand_macro.expand_macro, { noremap = true })
 
-  vim.keymap.set('n', '<leader>mu',
+  vim.keymap.set('n', '<leader>kk',
     function()
       local up = true
       require 'rust-tools'.move_item.move_item(up)
@@ -253,7 +264,7 @@ function M.rust_keymaps(_, bufnr)
     , { noremap = true })
 
 
-  vim.keymap.set('n', '<leader>md',
+  vim.keymap.set('n', '<leader>jj',
     function()
       local down = false
       require 'rust-tools'.move_item.move_item(down)
@@ -279,15 +290,17 @@ nmap("<leader>ff", M.format, '[F]ormat [F]ile')
 vim.cmd [[
 vmap <C-/> gc
 nmap <C-/> gcc
+nmap <C-f> /^impl<CR>
+nmap <C-b> ?^impl<CR>
 ]]
 
 -- snippets
 vim.cmd [[
 " press <Tab> to expand or jump in a snippet. These can also be mapped separately
 " via <Plug>luasnip-expand-snippet and <Plug>luasnip-jump-next.
-imap <silent><expr> <C-Enter> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<C-Enter>' 
+imap <silent><expr> <C-Enter> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<C-Enter>'
 
-" imap <silent><expr> <Tab> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<Tab>' 
+" imap <silent><expr> <Tab> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<Tab>'
 " -1 for jumping backwards.
 inoremap <silent> <S-Tab> <cmd>lua require'luasnip'.jump(-1)<Cr>
 
