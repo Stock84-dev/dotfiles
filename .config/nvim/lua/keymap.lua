@@ -278,7 +278,8 @@ function M.format()
   -- vim.cmd [[Prettier]] -- Removes trailing dot when formatting Rust numbers
   -- Then format it with lsp
   --vim.lsp.buf.formatting_sync(nil, 1000)
-  vim.defer_fn(function() vim.lsp.buf.formatting_sync(nil, 1000) end, 500)
+  -- vim.defer_fn(function() vim.lsp.buf.formatting_sync(nil, 1000) end, 500)
+  vim.defer_fn(function() vim.lsp.buf.format() end, 500)
 
   -- Formatting with lsp is still async, so we need to save again
   vim.defer_fn(function() vim.cmd [[wa]] end, 1500)

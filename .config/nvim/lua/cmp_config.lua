@@ -28,10 +28,32 @@ local cmp_kinds = {
   Operator = '  ',
   TypeParameter = '  ',
 }
+local f = cmp_autopairs.on_confirm_done();
 
+-- show signature help
+function on_confirm_done(evt)
+  f(evt)
+  if vim.fn.visualmode() == 'v' then
+    vim.fn.system("notify-send v")
+    vim.defer_fn(function() 
+      vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>da(", true, false, true), "tx", false)
+    end, 2)
+    vim.defer_fn(function() 
+      vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("a", true, false, true), "tx!", false)
+    end, 4)
+    vim.defer_fn(function() 
+      vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("(", true, false, true), "i", false)
+    end, 8)
+  end
+end
+
+-- cmp.event:on(
+--   'confirm_done',
+--   cmp_autopairs.on_confirm_done()
+-- )
 cmp.event:on(
   'confirm_done',
-  cmp_autopairs.on_confirm_done()
+  on_confirm_done
 )
 
 cmp.setup {
@@ -44,10 +66,23 @@ cmp.setup {
     ['<C-u>'] = cmp.mapping.scroll_docs(-4),
     ['<C-d>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete(),
-    ['<Tab>'] = cmp.mapping.confirm {
-      behavior = cmp.ConfirmBehavior.Replace,
-      select = true,
-    },
+    -- ['<Tab>'] = cmp.mapping.confirm {
+    --   behavior = cmp.ConfirmBehavior.Replace,
+    --   select = true,
+    -- },
+    ["<Tab>"] = cmp.mapping(function(fallback)
+      -- This little snippet will confirm with tab, and if no entry is selected, will confirm the first item
+      if cmp.visible() then
+        local entry = cmp.get_selected_entry()
+	if not entry then
+	  cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+	else
+	  cmp.confirm({ behavior = cmp.ConfirmBehavior.Insert })
+	end
+      else
+        fallback()
+      end
+    end, {"i","s","c",}),
     ['<C-j>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
@@ -90,9 +125,21 @@ cmp.setup {
       return vim_item
     end,
   },
+  -- formatting = {
+  --   format = function(entry, vim_item)
+  --     vim_item.menu = entry:get_completion_item().detail
+  --     return vim_item
+  --   end
+  -- },
+  completion = {
+    autocomplete = {
+      cmp.TriggerEvent.TextChanged,
+    },
+    completeopt = "menuone,noinsert,noselect"
+  },
   sources = {
     { name = 'nvim_lsp', priority = 8 },
-    -- { name = 'nvim_lsp_signature_help' },
+    { name = 'nvim_lsp_signature_help' },
     -- { name = 'luasnip' },
     -- { name = "crates" },
     -- { name = "path" },
@@ -105,3 +152,13 @@ cmp.setup {
 -- require('lspconfig')['rust-analyzer'].setup {
 --   capabilities = capabilities
 -- }
+-- function emitCtrlSpace()
+--     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-Space>", true, true, true), "i", true)
+--     -- vim.fn.system("notify-send hi")
+-- end
+-- vim.api.nvim_exec([[
+--     augroup TextChangeMonitor
+--         autocmd!
+--         autocmd CursorMovedI *.rs lua emitCtrlSpace()
+--     augroup END
+-- ]], false)

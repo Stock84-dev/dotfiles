@@ -19,9 +19,9 @@ require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
   -- use { 'neoclide/coc.nvim', { branch = 'release' } }
   -- use {'neoclide/coc.nvim', branch = 'master', run = 'yarn install --frozen-lockfile'}
-  use { 'ms-jpq/coq_nvim', branch = 'coq' }
-  use { 'ms-jpq/coq.artifacts', branch = 'artifacts' }
-  use { 'ms-jpq/coq.thirdparty', branch = '3p' }
+  -- use { 'ms-jpq/coq_nvim', branch = 'coq' }
+  -- use { 'ms-jpq/coq.artifacts', branch = 'artifacts' }
+  -- use { 'ms-jpq/coq.thirdparty', branch = '3p' }
 
   use 'arecarn/vim-crunch'
 
@@ -95,9 +95,21 @@ require('packer').startup(function(use)
   --
   --
   --
-
+  use("hrsh7th/nvim-cmp")
+  use({
+    -- cmp LSP completion
+    "hrsh7th/cmp-nvim-lsp",
+    -- cmp Snippet completion
+    "hrsh7th/cmp-vsnip",
+    -- cmp Path completion
+    "hrsh7th/cmp-path",
+    "hrsh7th/cmp-buffer",
+    after = { "hrsh7th/nvim-cmp" },
+    requires = { "hrsh7th/nvim-cmp" },
+  })
+  --
   -- use 'hrsh7th/cmp-path'
-  -- use 'hrsh7th/cmp-nvim-lsp-signature-help'
+  use 'hrsh7th/cmp-nvim-lsp-signature-help'
   use 'github/copilot.vim'
 
   use { -- Highlight, edit, and navigate code
@@ -123,10 +135,10 @@ require('packer').startup(function(use)
   use 'tpope/vim-rhubarb'
   use 'lewis6991/gitsigns.nvim'
 
-  use 'nvim-lualine/lualine.nvim' -- Fancier statusline
+  use 'nvim-lualine/lualine.nvim'           -- Fancier statusline
   use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
-  use 'numToStr/Comment.nvim' -- "gc" to comment visual regions/lines
-  use 'tpope/vim-sleuth' -- Detect tabstop and shiftwidth automatically
+  use 'numToStr/Comment.nvim'               -- "gc" to comment visual regions/lines
+  use 'tpope/vim-sleuth'                    -- Detect tabstop and shiftwidth automatically
 
   -- Fuzzy Finder (files, lsp, etc)
   use { 'nvim-telescope/telescope.nvim', branch = '0.1.x', requires = { 'nvim-lua/plenary.nvim' } }
@@ -250,12 +262,12 @@ require('kanagawa').setup({
   statementStyle = { bold = false },
   typeStyle = { bold = false },
   variablebuiltinStyle = { italic = false, bold = false },
-  specialReturn = true, -- special highlight for the return keyword
+  specialReturn = true,    -- special highlight for the return keyword
   specialException = true, -- special highlight for exception handling keywords
-  transparent = false, -- do not set background color
-  dimInactive = false, -- dim inactive window `:h hl-NormalNC`
-  globalStatus = false, -- adjust window separators highlight for laststatus=3
-  terminalColors = true, -- define vim.g.terminal_color_{0,17}
+  transparent = false,     -- do not set background color
+  dimInactive = false,     -- dim inactive window `:h hl-NormalNC`
+  globalStatus = false,    -- adjust window separators highlight for laststatus=3
+  terminalColors = true,   -- define vim.g.terminal_color_{0,17}
   colors = {
     -- Bg Shades
     sumiInk0  = "#073642",
@@ -271,24 +283,24 @@ require('kanagawa').setup({
 
 
     -- Popup and Floats
-    waveBlue1 = "#073642",
-    waveBlue2 = "#2D4F67",
+    waveBlue1     = "#073642",
+    waveBlue2     = "#2D4F67",
 
     -- Diff and Git
-    winterGreen  = "#2B3328",
-    winterYellow = "#49443C",
-    winterRed    = "#43242B",
-    winterBlue   = "#252535",
-    autumnGreen  = "#76946A",
+    winterGreen   = "#2B3328",
+    winterYellow  = "#49443C",
+    winterRed     = "#43242B",
+    winterBlue    = "#252535",
+    autumnGreen   = "#76946A",
 
-    autumnRed    = "#C34043",
-    autumnYellow = "#DCA561",
+    autumnRed     = "#C34043",
+    autumnYellow  = "#DCA561",
 
     -- Diag
-    samuraiRed  = "#E82424",
-    roninYellow = "#FF9E3B",
-    waveAqua1   = "#6A9589",
-    dragonBlue  = "#658594",
+    samuraiRed    = "#E82424",
+    roninYellow   = "#FF9E3B",
+    waveAqua1     = "#6A9589",
+    dragonBlue    = "#658594",
 
     -- Fg and Comments
     oldWhite      = "#C8C093",
@@ -297,9 +309,9 @@ require('kanagawa').setup({
     fujiGray      = "#727169",
     springViolet1 = "#938AA9",
 
-    oniViolet   = "#859900",
+    oniViolet     = "#859900",
     --oniViolet     = "#957FB8",
-    crystalBlue = "#D33682",
+    crystalBlue   = "#D33682",
     --crystalBlue   = "#7E9CD8",
 
     springViolet2 = "#9CABCA",
@@ -313,21 +325,21 @@ require('kanagawa').setup({
     -- waveAqua5  = "#6CAF95",
     -- waveAqua3  = "#68AD99",
 
-    springGreen = "#98BB6C",
-    boatYellow1 = "#938056",
-    boatYellow2 = "#C0A36E",
-    carpYellow  = "#6C71C4",
+    springGreen   = "#98BB6C",
+    boatYellow1   = "#938056",
+    boatYellow2   = "#C0A36E",
+    carpYellow    = "#6C71C4",
     --carpYellow    = "#E6C384",
 
-    sakuraPink   = "#D27E99",
-    waveRed      = "#E46876",
-    peachRed     = "#FF5D62",
-    surimiOrange = "#CB4B16",
+    sakuraPink    = "#D27E99",
+    waveRed       = "#E46876",
+    peachRed      = "#FF5D62",
+    surimiOrange  = "#CB4B16",
     --surimiOrange  = "#FFA066",
-    katanaGray   = "#717C7C",
+    katanaGray    = "#717C7C",
   },
   overrides = {
-      Boolean = { bold = false },
+    Boolean = { bold = false },
   },
   theme = "default" -- Load "default" theme or the experimental "light" theme
 })
@@ -370,8 +382,17 @@ require('hlargs').setup {
 }
 
 vim.cmd [[colorscheme kanagawa]]
+vim.api.nvim_set_hl(0, '@lsp.type.variable.rust', {})
+vim.api.nvim_set_hl(0, '@lsp.mod.constant.rust', { fg = "#CB4B16" })
+vim.api.nvim_set_hl(0, '@lsp.type.selfKeyword.rust', {})
 vim.api.nvim_set_hl(0, '@parameter', { fg = "#93A1A1" })
 vim.api.nvim_set_hl(0, '@namespace', { fg = "#93A1A1" })
+vim.api.nvim_set_hl(0, '@variable', { fg = "#93A1A1" })
+vim.api.nvim_set_hl(0, '@lsp.type.variable.rust', { fg = "#93A1A1" })
+vim.api.nvim_set_hl(0, '@lsp.type.namespace.rust', { fg = "#93A1A1" })
+vim.api.nvim_set_hl(0, '@lsp.type.decorator.rust', { fg = "#CB4B16" })
+vim.api.nvim_set_hl(0, '@lsp.typemod.namespace.library.rust', { fg = "#93A1A1" })
+vim.api.nvim_set_hl(0, '@lsp.typemod.keyword.crateRoot.rust', { fg = "#859900" })
 vim.api.nvim_set_hl(0, '@type.qualifier', { fg = "#859900" })
 --vim.api.nvim_set_hl(0, '@variable', { fg = "#FF0000" })
 --vim.api.nvim_set_hl(0, '@type', { fg = "#FF0000" })
@@ -404,7 +425,7 @@ vim.cmd [[set scrolloff=999]]
 --everblush.setup({ nvim_tree = { contrast = true } })
 
 -- Set completeopt to have a better completion experience
-vim.o.completeopt = 'menuone,noselect'
+-- vim.o.completeopt = 'menuone,noselect'
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -419,17 +440,17 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 require('crates').setup {
   src = {
-    coq = {
-      enabled = true,
-      name = "crates.nvim",
-    },
+    -- coq = {
+    --   enabled = true,
+    --   name = "crates.nvim",
+    -- },
   },
   null_ls = {
     enabled = true,
     name = "crates.nvim",
   },
 }
--- require('cmp_config')
+require('cmp_config')
 require('telescope_config')
 require("colorizer").setup()
 require('dial_config')
@@ -444,10 +465,10 @@ local keymap = require('keymap')
 --}
 
 require('tabline').setup({
-  show_index = true, -- show tab index
-  show_modify = true, -- show buffer modification indicator
+  show_index = true,        -- show tab index
+  show_modify = true,       -- show buffer modification indicator
   modify_indicator = '[+]', -- modify indicator
-  no_name = '[No name]', -- no name buffer name
+  no_name = '[No name]',    -- no name buffer name
 })
 
 -- Enable Comment.nvim
@@ -608,21 +629,21 @@ require('neodev').setup()
 require('mason').setup()
 
 -- Ensure the servers above are installed
-local mason_lspconfig = require 'mason-lspconfig'
-
-mason_lspconfig.setup {
-  ensure_installed = vim.tbl_keys(servers),
-}
-
-mason_lspconfig.setup_handlers {
-  function(server_name)
-    require('lspconfig')[server_name].setup {
-      capabilities = capabilities,
-      on_attach = Lsp_on_attach,
-      settings = servers[server_name],
-    }
-  end,
-}
+-- local mason_lspconfig = require 'mason-lspconfig'
+--
+-- mason_lspconfig.setup {
+--   ensure_installed = vim.tbl_keys(servers),
+-- }
+--
+-- mason_lspconfig.setup_handlers {
+--   function(server_name)
+--     require('lspconfig')[server_name].setup {
+--       capabilities = capabilities,
+--       on_attach = Lsp_on_attach,
+--       settings = servers[server_name],
+--     }
+--   end,
+-- }
 
 -- Turn on lsp status information
 require('fidget').setup()
@@ -856,6 +877,7 @@ local opts = {
         --     "--allow-dirty" },
         -- },
         completion = {
+          ["callable.snippets"] = "",
           ["privateEditable.enable"] = true,
         },
         diagnostics = {
@@ -913,14 +935,14 @@ vim.api.nvim_create_autocmd("InsertLeave", { callback = set_changed_time, group 
 vim.api.nvim_create_autocmd("CursorMoved", { callback = set_changed_time, group = group })
 
 require('auto-save').setup({
-  enabled = true, -- start auto-save when the plugin is loaded (i.e. when your package manager loads it)
+  enabled = true,        -- start auto-save when the plugin is loaded (i.e. when your package manager loads it)
   execution_message = {
     message = function() -- message to print on save
       --return ("AutoSave: saved at " .. vim.fn.strftime("%H:%M:%S"))
       return ("")
     end,
-    dim = 0.18, -- dim the color of `message`
-    cleaning_interval = 1250, -- (milliseconds) automatically clean MsgArea after displaying `message`. See :h MsgArea
+    dim = 0.18,                                      -- dim the color of `message`
+    cleaning_interval = 1250,                        -- (milliseconds) automatically clean MsgArea after displaying `message`. See :h MsgArea
   },
   trigger_events = { "InsertLeave", "TextChanged" }, -- vim events that trigger auto-save. See :h events
   --trigger_events = { "InsertLeave", "TextChanged" }, -- vim events that trigger auto-save. See :h events
@@ -940,21 +962,21 @@ require('auto-save').setup({
     local modifiable = fn.getbufvar(buf, "&modifiable") == 1
     local not_blacklisted = utils.not_in(fn.getbufvar(buf, "&filetype"), {})
     if in_normal_mode and debounced and modifiable and not_blacklisted then
-      return true -- met condition(s), can save
+      return true                            -- met condition(s), can save
     end
-    return false -- can't save
+    return false                             -- can't save
   end,
-  write_all_buffers = false, -- write all buffers when the current one meets `condition`
+  write_all_buffers = false,                 -- write all buffers when the current one meets `condition`
   debounce_delay = auto_save_delay_s * 1000, -- saves the file at most every `debounce_delay` milliseconds
-  callbacks = { -- functions to be executed at different intervals
-    enabling = nil, -- ran when enabling auto-save
-    disabling = nil, -- ran when disabling auto-save
-    before_asserting_save = nil, -- ran before checking `condition`
+  callbacks = {                              -- functions to be executed at different intervals
+    enabling = nil,                          -- ran when enabling auto-save
+    disabling = nil,                         -- ran when disabling auto-save
+    before_asserting_save = nil,             -- ran before checking `condition`
     --before_saving = nil,
     before_saving = function(buf)
       text_changed_by_formatter_time = os.time()
       keymap.format()
-    end, -- ran before doing the actual save
+    end,               -- ran before doing the actual save
     after_saving = nil -- ran after doing the actual save
   }
 })
@@ -969,7 +991,9 @@ null_ls.setup({
   on_attach = function(client, bufnr)
     if client.supports_method("textDocument/formatting") then
       vim.keymap.set("n", "<Leader>f", function()
-        vim.lsp.buf.format({ bufnr = vim.api.nvim_get_current_buf() })
+        -- vim.lsp.buf.formatting_sync(nil, 1000)
+        vim.lsp.buf.format()
+        -- vim.lsp.buf.format({ bufnr = vim.api.nvim_get_current_buf() })
       end, { buffer = bufnr, desc = "[lsp] format" })
 
       -- format on save
@@ -978,17 +1002,19 @@ null_ls.setup({
         buffer = bufnr,
         group = group,
         callback = function()
-          vim.lsp.buf.format({ bufnr = bufnr, async = async })
+          vim.lsp.buf.format()
+          -- vim.lsp.buf.formatting_sync(nil, 1000)
+          -- vim.lsp.buf.format({ bufnr = bufnr, async = async })
         end,
         desc = "[lsp] format on save",
       })
     end
 
-    if client.supports_method("textDocument/rangeFormatting") then
-      vim.keymap.set("x", "<Leader>f", function()
-        vim.lsp.buf.format({ bufnr = vim.api.nvim_get_current_buf() })
-      end, { buffer = bufnr, desc = "[lsp] format" })
-    end
+    -- if client.supports_method("textDocument/rangeFormatting") then
+    --   vim.keymap.set("x", "<Leader>f", function()
+    --     vim.lsp.buf.format({ bufnr = vim.api.nvim_get_current_buf() })
+    --   end, { buffer = bufnr, desc = "[lsp] format" })
+    -- end
   end,
 })
 
@@ -1017,19 +1043,19 @@ prettier.setup({
 
 local Path = require('plenary.path')
 require('session_manager').setup({
-  sessions_dir = Path:new(vim.fn.stdpath('data'), 'sessions'), -- The directory where the session files will be saved.
-  path_replacer = '__', -- The character to which the path separator will be replaced for session files.
-  colon_replacer = '++', -- The character to which the colon symbol will be replaced for session files.
+  sessions_dir = Path:new(vim.fn.stdpath('data'), 'sessions'),               -- The directory where the session files will be saved.
+  path_replacer = '__',                                                      -- The character to which the path separator will be replaced for session files.
+  colon_replacer = '++',                                                     -- The character to which the colon symbol will be replaced for session files.
   autoload_mode = require('session_manager.config').AutoloadMode.CurrentDir, -- Define what to do when Neovim is started without arguments. Possible values: Disabled, CurrentDir, LastSession
-  autosave_last_session = true, -- Automatically save last session on exit and on session switch.
-  autosave_ignore_not_normal = true, -- Plugin will not save a session when no buffers are opened, or all of them aren't writable or listed.
-  autosave_ignore_dirs = {}, -- A list of directories where the session will not be autosaved.
-  autosave_ignore_filetypes = { -- All buffers of these file types will be closed before the session is saved.
+  autosave_last_session = true,                                              -- Automatically save last session on exit and on session switch.
+  autosave_ignore_not_normal = true,                                         -- Plugin will not save a session when no buffers are opened, or all of them aren't writable or listed.
+  autosave_ignore_dirs = {},                                                 -- A list of directories where the session will not be autosaved.
+  autosave_ignore_filetypes = {                                              -- All buffers of these file types will be closed before the session is saved.
     'gitcommit',
   },
-  autosave_ignore_buftypes = {}, -- All buffers of these bufer types will be closed before the session is saved.
+  autosave_ignore_buftypes = {},    -- All buffers of these bufer types will be closed before the session is saved.
   autosave_only_in_session = false, -- Always autosaves session. If true, only autosaves after a session is active.
-  max_path_length = 80, -- Shorten the display path if length exceeds this threshold. Use 0 if don't want to shorten the path at all.
+  max_path_length = 80,             -- Shorten the display path if length exceeds this threshold. Use 0 if don't want to shorten the path at all.
 })
 
 vim.cmd [[
@@ -1052,10 +1078,10 @@ vim.opt.signcolumn = "yes"
 
 local keyset = vim.keymap.set
 -- Autocomplete
-function _G.check_back_space()
-  local col = vim.fn.col('.') - 1
-  return col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') ~= nil
-end
+-- function _G.check_back_space()
+--   local col = vim.fn.col('.') - 1
+--   return col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') ~= nil
+-- end
 
 -- -- Use Tab for trigger completion with characters ahead and navigate
 -- -- NOTE: There's always a completion item selected by default, you may want to enable
@@ -1227,36 +1253,36 @@ end
 -- -- keyset("n", "<space>p", ":<C-u>CocListResume<cr>", opts)
 --
 
-vim.g.coq_settings = {
-  auto_start = 'shut-up',
-  keymap = {
-    -- recommended = false,
-    pre_select = true,
-    jump_to_mark = "<c-,>"
-  },
-  -- limits = {
-  --   completion_auto_timeout = 0.988
-  -- },
-  -- match = {
-  --   max_results = 9000,
-  -- },
-  clients = {
-    paths = {
-      path_seps = {
-        "/"
-      }
-    },
-    buffers = {
-      match_syms = true
-    }
-  },
-  display = {
-    ghost_text = {
-      enabled = true
-    }
-  }
-}
-require("coq")
+-- vim.g.coq_settings = {
+--   auto_start = 'shut-up',
+--   keymap = {
+--     -- recommended = false,
+--     pre_select = true,
+--     jump_to_mark = "<c-,>"
+--   },
+--   -- limits = {
+--   --   completion_auto_timeout = 0.988
+--   -- },
+--   -- match = {
+--   --   max_results = 9000,
+--   -- },
+--   clients = {
+--     paths = {
+--       path_seps = {
+--         "/"
+--       }
+--     },
+--     buffers = {
+--       match_syms = true
+--     }
+--   },
+--   display = {
+--     ghost_text = {
+--       enabled = true
+--     }
+--   }
+-- }
+-- require("coq")
 
 vim.cmd [[
 if has("persistent_undo")
@@ -1279,7 +1305,7 @@ set undofile
 augroup undo
     autocmd!
     autocmd BufReadPost,BufCreate,BufNewFile * let b:undo_saved = undotree()['seq_cur'] | let b:undo_warned = 0
-augroup end 
+augroup end
 
 " Remap the keys
 nnoremap u :call Undo()<Cr>u
@@ -1309,4 +1335,28 @@ fun! Redo()
     endif
 endfun
 ]]
---end
+-- Avoid showing extra messages when using completion
+-- vim.opt.shortmess = vim.opt.shortmess + "c"
+-- function HandleTabInInsert()
+--     -- Check if we are in Visual mode
+--     vim.fn.system("notify-send pre")
+--     if vim.fn.visualmode() == 'V' then
+--         vim.fn.system("notify-send v")
+--         -- Exit Visual mode
+--         -- vim.cmd([[normal! <Esc>]])
+--     end
+--
+--     -- Emit "ci(<C-Space>"
+--     -- vim.api.nvim_feedkeys("ci(<C-Space>", "i", true)
+-- end
+--
+-- -- Set up the autocmd to trigger the function on <Tab> press in Insert mode
+-- vim.api.nvim_exec([[
+--     autocmd! FileType * autocmd InsertChar <Tab> call v:lua.HandleTabInInsert()
+-- ]], false)
+
+
+
+
+
+
