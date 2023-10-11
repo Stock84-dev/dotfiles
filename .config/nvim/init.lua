@@ -101,6 +101,7 @@ require('packer').startup(function(use)
     "hrsh7th/cmp-nvim-lsp",
     -- cmp Snippet completion
     "hrsh7th/cmp-vsnip",
+    "hrsh7th/cmp-cmdline",
     -- cmp Path completion
     "hrsh7th/cmp-path",
     "hrsh7th/cmp-buffer",
@@ -119,10 +120,10 @@ require('packer').startup(function(use)
     end,
   }
   use 'nvim-treesitter/playground'
-  use {
-    'm-demare/hlargs.nvim',
-    requires = { 'nvim-treesitter/nvim-treesitter' }
-  }
+  -- use {
+  --   'm-demare/hlargs.nvim',
+  --   requires = { 'nvim-treesitter/nvim-treesitter' }
+  -- }
   use 'nvim-treesitter/nvim-treesitter-context'
   -- use 'p00f/nvim-ts-rainbow'
 
@@ -217,8 +218,6 @@ local sfile = vim.fn.expand '$MYVIMRC'
 -- [[ Setting options ]]
 -- See `:help vim.o`
 
--- Set highlight on search
-vim.o.hlsearch = false
 
 -- Make line numbers default
 vim.wo.number = true
@@ -343,52 +342,53 @@ require('kanagawa').setup({
   },
   theme = "default" -- Load "default" theme or the experimental "light" theme
 })
-require('hlargs').setup {
-  color = "#B58900",
-  --highlight = {},
-  --excluded_filetypes = {},
-  --disable = function(lang, bufnr) -- If changed, `excluded_filetypes` will be ignored
-  --  return vim.tbl_contains(opts.excluded_filetypes, lang)
-  --end,
-  --paint_arg_declarations = true,
-  --paint_arg_usages = true,
-  --paint_catch_blocks = {
-  --  declarations = false,
-  --  usages = false
-  --},
-  --extras = {
-  --  named_parameters = false,
-  --},
-  --hl_priority = 10000,
-  --excluded_argnames = {
-  --  declarations = {},
-  --  usages = {
-  --    python = { 'self', 'cls' },
-  --    lua = { 'self' }
-  --  }
-  --},
-  --performance = {
-  --  parse_delay = 1,
-  --  slow_parse_delay = 50,
-  --  max_iterations = 400,
-  --  max_concurrent_partial_parses = 30,
-  --  debounce = {
-  --    partial_parse = 3,
-  --    partial_insert_mode = 100,
-  --    total_parse = 700,
-  --    slow_parse = 5000
-  --  }
-  --}
-}
+--require('hlargs').setup {
+--  color = "#B58900",
+--  --highlight = {},
+--  --excluded_filetypes = {},
+--  --disable = function(lang, bufnr) -- If changed, `excluded_filetypes` will be ignored
+--  --  return vim.tbl_contains(opts.excluded_filetypes, lang)
+--  --end,
+--  --paint_arg_declarations = true,
+--  --paint_arg_usages = true,
+--  --paint_catch_blocks = {
+--  --  declarations = false,
+--  --  usages = false
+--  --},
+--  --extras = {
+--  --  named_parameters = false,
+--  --},
+--  --hl_priority = 10000,
+--  --excluded_argnames = {
+--  --  declarations = {},
+--  --  usages = {
+--  --    python = { 'self', 'cls' },
+--  --    lua = { 'self' }
+--  --  }
+--  --},
+--  --performance = {
+--  --  parse_delay = 1,
+--  --  slow_parse_delay = 50,
+--  --  max_iterations = 400,
+--  --  max_concurrent_partial_parses = 30,
+--  --  debounce = {
+--  --    partial_parse = 3,
+--  --    partial_insert_mode = 100,
+--  --    total_parse = 700,
+--  --    slow_parse = 5000
+--  --  }
+--  --}
+--}
 
 vim.cmd [[colorscheme kanagawa]]
 vim.api.nvim_set_hl(0, '@lsp.type.variable.rust', {})
 vim.api.nvim_set_hl(0, '@lsp.mod.constant.rust', { fg = "#CB4B16" })
 vim.api.nvim_set_hl(0, '@lsp.type.selfKeyword.rust', {})
+vim.api.nvim_set_hl(0, '@lsp.type.parameter.rust', { fg = "#B58900"})
 vim.api.nvim_set_hl(0, '@parameter', { fg = "#93A1A1" })
 vim.api.nvim_set_hl(0, '@namespace', { fg = "#93A1A1" })
 vim.api.nvim_set_hl(0, '@variable', { fg = "#93A1A1" })
-vim.api.nvim_set_hl(0, '@lsp.type.variable.rust', { fg = "#93A1A1" })
+-- vim.api.nvim_set_hl(0, '@lsp.type.variable.rust', { fg = "#93A1A1" })
 vim.api.nvim_set_hl(0, '@lsp.type.namespace.rust', { fg = "#93A1A1" })
 vim.api.nvim_set_hl(0, '@lsp.type.decorator.rust', { fg = "#CB4B16" })
 vim.api.nvim_set_hl(0, '@lsp.typemod.namespace.library.rust', { fg = "#93A1A1" })
@@ -419,6 +419,8 @@ vim.cmd [[set cursorline]]
 vim.cmd [[hi VirtColumn ctermfg=lightyellow guifg=#073642]]
 vim.cmd [[set colorcolumn=100]]
 vim.cmd [[set scrolloff=999]]
+-- Set highlight on search
+vim.o.hlsearch = false
 
 
 --local everblush = require('everblush')
@@ -438,18 +440,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   pattern = '*',
 })
 
-require('crates').setup {
-  src = {
-    -- coq = {
-    --   enabled = true,
-    --   name = "crates.nvim",
-    -- },
-  },
-  null_ls = {
-    enabled = true,
-    name = "crates.nvim",
-  },
-}
 require('cmp_config')
 require('telescope_config')
 require("colorizer").setup()
@@ -1359,4 +1349,15 @@ endfun
 
 
 
-
+require('crates').setup {
+  src = {
+    -- coq = {
+    --   enabled = true,
+    --   name = "crates.nvim",
+    -- },
+  },
+  null_ls = {
+    enabled = true,
+    name = "crates.nvim",
+  },
+}

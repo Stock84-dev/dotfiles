@@ -33,17 +33,23 @@ local f = cmp_autopairs.on_confirm_done();
 -- show signature help
 function on_confirm_done(evt)
   f(evt)
+  print(vim.fn.visualmode())
   if vim.fn.visualmode() == 'v' then
-    vim.fn.system("notify-send v")
-    vim.defer_fn(function() 
-      vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>da(", true, false, true), "tx", false)
-    end, 2)
-    vim.defer_fn(function() 
-      vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("a", true, false, true), "tx!", false)
-    end, 4)
-    vim.defer_fn(function() 
-      vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("(", true, false, true), "i", false)
-    end, 8)
+    local col = vim.api.nvim_win_get_cursor(0)[2]
+    local prev_char = vim.api.nvim_get_current_line():sub(col,col)
+    -- vim.fn.system("notify-send '" .. char .. "'")
+    if prev_char == '(' then
+      -- vim.fn.system("notify-send v")
+      vim.defer_fn(function() 
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>da(", true, false, true), "tx", false)
+      end, 2)
+      vim.defer_fn(function() 
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("a", true, false, true), "tx!", false)
+      end, 4)
+      vim.defer_fn(function() 
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("(", true, false, true), "i", false)
+      end, 8)
+    end
   end
 end
 
@@ -140,12 +146,28 @@ cmp.setup {
   sources = {
     { name = 'nvim_lsp', priority = 8 },
     { name = 'nvim_lsp_signature_help' },
+    { name = "crates" },
     -- { name = 'luasnip' },
-    -- { name = "crates" },
-    -- { name = "path" },
-    -- { name = "buffer" }
+    { name = "path" },
+    { name = "buffer" }
   },
 }
+cmp.setup.cmdline(':', {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = cmp.config.sources({
+    { name = 'path' }
+  }, {
+    { name = 'cmdline' }
+  })
+})
+
+vim.api.nvim_create_autocmd("BufRead", {
+    group = vim.api.nvim_create_augroup("CmpSourceCargo", { clear = true }),
+    pattern = "Cargo.toml",
+    callback = function()
+        cmp.setup.buffer({ sources = { { name = "crates" } } })
+    end,
+})
 
 -- local capabilities = require('cmp_nvim_lsp').default_capabilities()
 -- -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.

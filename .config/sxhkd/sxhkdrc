@@ -7,7 +7,7 @@
 #	xdotoll key Escape
 # sleep is here so that neovim updates its window size
 super + 1 
-	alacritty -e zsh -c 'sleep 0.01 && nvim -c :Calendar'
+	alacritty -e zsh -c 'sleep 0.01 && vim -c :Calendar'
 super + Return
 	alacritty
 super + q
@@ -25,8 +25,10 @@ super + control + c
 	alacritty -e zsh -c 'sleep 0.01 && nvim ~/.config/qtile/config.py'
 #super + shift + c
 #	alacritty -e nvim ~/.config/sxhkd/sxhkdrc
+super + control + f
+	~/data/linux/scripts/flow.sh
 super + e
-	alacritty -e zsh -c ranger
+	alacritty -e zsh -c '. ~/.zshrc; ranger'
 super + End
 	xscreensaver-command -lock
 super + control + End
@@ -60,9 +62,9 @@ super + z
 super + plus 
 	notify-send -t 1000 $(amixer set Master 0 | grep -P -o '\d+%')
 super + minus 
-	notify-send -t 1000 $(amixer set Master 5%- | grep -P -o '\d+%')
+	notify-send -t 1000 $(amixer set Master 5%- | grep -P -o '\d+%' | head -n 1)
 super + equal
-	notify-send -t 1000 $(amixer set Master 5%+ | grep -P -o '\d+%')
+	notify-send -t 1000 $(amixer set Master 5%+ | grep -P -o '\d+%' | head -n 1)
 super + {_,shift + }9
 	~/data/linux/scripts/keyboardLayout.sh {hr, us}
 super + Print ; {a, shift + a, s, shift + s, n}
