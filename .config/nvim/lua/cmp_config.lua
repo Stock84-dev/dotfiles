@@ -161,13 +161,13 @@ cmp.setup.cmdline(':', {
   })
 })
 
-vim.api.nvim_create_autocmd("BufRead", {
-    group = vim.api.nvim_create_augroup("CmpSourceCargo", { clear = true }),
-    pattern = "Cargo.toml",
-    callback = function()
-        cmp.setup.buffer({ sources = { { name = "crates" } } })
-    end,
-})
+-- vim.api.nvim_create_autocmd("BufRead", {
+--     group = vim.api.nvim_create_augroup("CmpSourceCargo", { clear = true }),
+--     pattern = "Cargo.toml",
+--     callback = function()
+--         cmp.setup.buffer({ sources = { { name = "crates" }, { name = "path" } } })
+--     end,
+-- })
 
 -- local capabilities = require('cmp_nvim_lsp').default_capabilities()
 -- -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.

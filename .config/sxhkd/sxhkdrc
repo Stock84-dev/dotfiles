@@ -69,6 +69,8 @@ super + {_,shift + }9
 	~/data/linux/scripts/keyboardLayout.sh {hr, us}
 super + Print ; {a, shift + a, s, shift + s, n}
 	~/data/linux/scripts/screenshot-selector.sh {a, A, s, S, n}
+super + y
+	/usr/bin/ssh -Y jernej "cat ~/.cache/clip.txt" | xclip -selection clipboard
 #	scrot ~/data/Pictures/screenshots/$(date +%d.%m.%y-%H:%M:%S).png && notify-send -t 1000 "Screenshot saved."
 # dont know why but code needs to be placed inside script
 #super + control + Print

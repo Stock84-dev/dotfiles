@@ -84,7 +84,8 @@ local showSymbolFinder = function()
   -- lowercase for simplicity :)
   local lsp_symbols = vim.tbl_map(string.lower, vim.lsp.protocol.SymbolKind)
   -- define a filter function to excl. undesired symbols
-  local symbols = vim.tbl_filter(function(symbol) return symbol ~= "field" and symbol ~= "enummember" and symbol ~= "object" end, lsp_symbols)
+  local symbols = vim.tbl_filter(
+    function(symbol) return symbol ~= "field" and symbol ~= "enummember" and symbol ~= "object" end, lsp_symbols)
   require('telescope.builtin').lsp_document_symbols { symbols = symbols, show_line = true }
 end
 
@@ -215,6 +216,7 @@ vim.api.nvim_set_keymap("v", "g<C-x>", require("dial.map").dec_gvisual(), { nore
 
 local crates = require('crates')
 local opts = { noremap = true, silent = true }
+vim.keymap.set('n', '<leader>d', ":let @z = expand('%:p')<CR>:wincmd w<CR>:execute 'edit' @z<CR>", opts)
 
 vim.keymap.set('n', '<leader>ct', crates.toggle, opts)
 vim.keymap.set('n', '<leader>cr', crates.reload, opts)

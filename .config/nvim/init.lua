@@ -24,6 +24,7 @@ require('packer').startup(function(use)
   -- use { 'ms-jpq/coq.thirdparty', branch = '3p' }
 
   use 'arecarn/vim-crunch'
+  -- use 'vim-scripts/diffchar.vim'
 
   -- Formatting
   use('jose-elias-alvarez/null-ls.nvim')
@@ -115,6 +116,7 @@ require('packer').startup(function(use)
 
   use { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    commit = '31f608e',
     run = function()
       pcall(require('nvim-treesitter.install').update { with_sync = true })
     end,
@@ -137,7 +139,7 @@ require('packer').startup(function(use)
   use 'lewis6991/gitsigns.nvim'
 
   use 'nvim-lualine/lualine.nvim'           -- Fancier statusline
-  use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
+  use { 'lukas-reineke/indent-blankline.nvim', commit = '9637670' } -- Add indentation guides even on blank lines
   use 'numToStr/Comment.nvim'               -- "gc" to comment visual regions/lines
   use 'tpope/vim-sleuth'                    -- Detect tabstop and shiftwidth automatically
 
@@ -167,7 +169,7 @@ require('packer').startup(function(use)
   -- makes word motions work on different cases like CamelCase
   use 'chaoren/vim-wordmotion'
   use 'rhysd/clever-f.vim'
-  use 'kevinhwang91/rnvimr'
+  use { 'kevinhwang91/rnvimr', commit = "5f0483d"}
   use 'crispgm/nvim-tabline'
 
   use 'wakatime/vim-wakatime'
@@ -384,7 +386,7 @@ vim.cmd [[colorscheme kanagawa]]
 vim.api.nvim_set_hl(0, '@lsp.type.variable.rust', {})
 vim.api.nvim_set_hl(0, '@lsp.mod.constant.rust', { fg = "#CB4B16" })
 vim.api.nvim_set_hl(0, '@lsp.type.selfKeyword.rust', {})
-vim.api.nvim_set_hl(0, '@lsp.type.parameter.rust', { fg = "#B58900"})
+vim.api.nvim_set_hl(0, '@lsp.type.parameter.rust', { fg = "#B58900" })
 vim.api.nvim_set_hl(0, '@parameter', { fg = "#93A1A1" })
 vim.api.nvim_set_hl(0, '@namespace', { fg = "#93A1A1" })
 vim.api.nvim_set_hl(0, '@variable', { fg = "#93A1A1" })
@@ -493,7 +495,7 @@ pcall(require('telescope').load_extension, 'fzf')
 -- See `:help nvim-treesitter`
 require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
-  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'typescript', 'help', 'vim' },
+  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'typescript', 'vim' },
   additional_vim_regex_highlighting = true,
 
   highlight = { enable = true },
@@ -595,45 +597,44 @@ require('nvim-treesitter.configs').setup {
 local servers = {
   -- clangd = {},
   -- gopls = {},
-  -- pyright = {},
-  -- rust_analyzer = {},
+  pyright = {},
+  rust_analyzer = {},
   -- tsserver = {},
+  lua_ls = {},
 
-  sumneko_lua = {
-    Lua = {
-      workspace = { checkThirdParty = false },
-      telemetry = { enable = false },
-    },
-  },
+  -- sumneko_lua = {
+  --   Lua = {
+  --     workspace = { checkThirdParty = false },
+  --     telemetry = { enable = false },
+  --   },
+  -- },
 }
 
 -- Setup neovim lua configuration
 require('neodev').setup()
 
 -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
--- local capabilities = vim.lsp.protocol.make_client_capabilities()
--- capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
--- local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
 -- Setup mason so it can manage external tooling
 require('mason').setup()
 
 -- Ensure the servers above are installed
--- local mason_lspconfig = require 'mason-lspconfig'
---
--- mason_lspconfig.setup {
---   ensure_installed = vim.tbl_keys(servers),
--- }
---
--- mason_lspconfig.setup_handlers {
---   function(server_name)
---     require('lspconfig')[server_name].setup {
---       capabilities = capabilities,
---       on_attach = Lsp_on_attach,
---       settings = servers[server_name],
---     }
---   end,
--- }
+local mason_lspconfig = require 'mason-lspconfig'
+mason_lspconfig.setup {
+  ensure_installed = vim.tbl_keys(servers),
+}
+
+mason_lspconfig.setup_handlers {
+  function(server_name)
+    require('lspconfig')[server_name].setup {
+      capabilities = capabilities,
+      -- on_attach = Lsp_on_attach,
+      settings = servers[server_name],
+    }
+  end,
+}
 
 -- Turn on lsp status information
 require('fidget').setup()

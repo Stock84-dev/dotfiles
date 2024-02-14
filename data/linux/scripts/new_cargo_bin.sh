@@ -8,7 +8,7 @@ touch $1/src/$1.rs
 cat > $1/Cargo.toml <<- EOM
 [package]
 name = "$1"
-version = "0.1.0"
+version = "1.0.0"
 authors = ["Stock84-dev <leontk8@gmail.com>"]
 edition = "2021"
 
