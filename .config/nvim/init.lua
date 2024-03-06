@@ -499,7 +499,7 @@ require('nvim-treesitter.configs').setup {
   additional_vim_regex_highlighting = true,
 
   highlight = { enable = true },
-  indent = { enable = true, disable = { 'python' } },
+  indent = { enable = true, disable = { 'python', 'rust' } },
   incremental_selection = {
     enable = true,
     keymaps = {

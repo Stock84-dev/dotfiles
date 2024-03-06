@@ -144,9 +144,9 @@ cmp.setup {
     completeopt = "menuone,noinsert,noselect"
   },
   sources = {
+    { name = "crates", priority = 10 },
     { name = 'nvim_lsp', priority = 8 },
     { name = 'nvim_lsp_signature_help' },
-    { name = "crates" },
     -- { name = 'luasnip' },
     { name = "path" },
     { name = "buffer" }
