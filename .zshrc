@@ -185,7 +185,7 @@ zstyle ':vcs_info:*:*' nvcsformats "%~" ""
 #PROMPT="%(0?.%{$PROMPT_SUCCESS_COLOR%}.%{$PROMPT_FAILURE_COLOR%})${SSH_TTY:+[%n@%m]}%{$FX[bold]%}%$PROMPT_PATH_MAX_LENGTH<..<"'${vcs_info_msg_0_%%.}'"%<<%(!.$PROMPT_ROOT_END.$PROMPT_DEFAULT_END)%{$FX[no-bold]%}%{$FX[reset]%} "
 #PROMPT="%(0?.%{$PROMPT_SUCCESS_COLOR%}.%{$PROMPT_FAILURE_COLOR%})${SSH_TTY:+[%n@%m]}%{$FX[bold]%}%$PROMPT_PATH_MAX_LENGTH<..<"'${vcs_info_msg_0_%%.}'"%<<%(!.$PROMPT_ROOT_END.$PROMPT_DEFAULT_END)%{$FX[no-bold]%}%{$FX[reset]%} "
 #RPROMPT="%{$PROMPT_VCS_INFO_COLOR%}"'$vcs_info_msg_1_'"%{$FX[reset]%}"
-PROMPT='%B%F{071}%2~%f%F{071}>%f%b '
+PROMPT='%B%F{166}%n@%m %B%F{071}%2~%f%F{071}>%f%b '
 # 
 # 
 #
@@ -273,11 +273,12 @@ bindkey -v
 bindkey '^R' history-incremental-search-backward
 bindkey "^A" vi-beginning-of-line
 bindkey "^E" vi-end-of-line
+export SHELL="/bin/zsh"
 export EDITOR=nvim
 export VISUAL=nvim
 export PATH="/home/stock/.config/coc/extensions/coc-rust-analyzer-data:$PATH"
 # using vim sa manpager https://github.com/gotbletu/shownotes/blob/master/vim_neovim_manpager.md
-export MANPAGER="/bin/sh -c \"col -b | vim --not-a-term -c 'set ft=man ts=8 nomod nolist noma' -\""
+export MANPAGER='nvim +Man!'
 # setting how many characters should vim display as manpager
 export GCM_CREDENTIAL_STORE=secretservice
 export MANWIDTH=94
@@ -285,23 +286,59 @@ export RUST_BACKTRACE=full
 export RUST_LIB_BACKTRACE=1
 export RUST_LOG=trace
 # export RUSTC_WRAPPER=sccache
-alias vim="nvim"
-alias v="nvim"
+alias mv="mv -i"
+alias vim="v"
+alias v="nvim --listen $(pwd)/nvim.pipe"
 alias p="cd /home/stock/ssd/projects/the_matrix/the_matrix && nvim . && cd -"
 alias r="ranger"
 alias b="upower -i /org/freedesktop/UPower/devices/battery_CMB1"
 alias :q="exit"
-alias cb="cauwugo build"
-alias cr="cauwugo run"
-alias ct="cauwugo test"
-alias ca="cauwugo add"
-alias cc="cauwugo check"
-alias ce="cauwugo expand"
-alias cw="cauwugo watch"
-alias cbr="cauwugo build --release"
-alias crr="cauwugo run --release"
+
+find_nvim_pipe() {
+    local dir=$(pwd)
+    while [ "$dir" != "/" ]; do
+        if [ -e "$dir/nvim.pipe" ]; then
+            echo "$dir/nvim.pipe"
+            return 0
+        fi
+        dir=$(dirname "$dir")
+    done
+    return 1  # File not found
+}
+
+cargo_wrapper () {
+    cmd=$1
+    shift
+    nvim_pipe_path=$(find_nvim_pipe)
+    nvim --server "$nvim_pipe_path" --remote-send "<ESC>:wa<CR>" > /dev/null 2>&1
+    package=$(basename $(pwd))
+    killall "cargo" > /dev/null 2>&1
+    { cargo $cmd --color=always -p $package $@ 2>&1; } | grep --line-buffered -v 'was not used in the crate graph' \
+	| grep --line-buffered -v 'Check that the patched package version and available features are compatible' \
+	| grep --line-buffered -v 'with the dependency requirements. If the patch has a different version from' \
+	| grep --line-buffered -v 'what is locked in the Cargo.lock file, run `cargo update` to use the new' \
+	| grep --line-buffered -v 'version. This may also occur with an optional dependency that is not enabled.'
+
+    return ${pipestatus[1]}
+}
+alias cb='cargo_wrapper build'
+alias cr='cargo_wrapper build && /home/stock/ssd/rustc_target/debug/$(basename $(pwd))'
+alias ct='cargo_wrapper test'
+alias ca='cargo_wrapper add'
+alias cc='cargo_wrapper check'
+alias ce='cargo_wrapper expand'
+alias cw='cargo watch'
+alias cbr='cargo_wrapper build --release'
+alias crr='cargo_wrapper build --release && /home/stock/ssd/rustc_target/release/$(basename $(pwd))'
+alias cargo='nvim --server "$(find_nvim_pipe)" --remote-send "<ESC>:wa<CR>" > /dev/null; killall "cargo"; cargo'
 alias w="curl wttr.in/Zagreb"
 alias gcd="git clone --depth=1"
+alias f='cd $(find /home/stock/ssd/projects/project-fusion/ -type d | grep --line-buffered -v "/src$" | grep --line-buffered -v "\." | fzf)'
+ssh ()
+{
+	/usr/bin/ssh -C -t "$@" zsh
+}
+alias s="/usr/bin/ssh -C -t jernej \"zsh -c 'source ~/.zshrc; ranger /home/user_public/leon_s/workspace/repos/rust'\""
 source ~/data/linux/scripts/gtm-plugin.sh
 c ()
 {
@@ -339,3 +376,32 @@ shutdown () {
 		/usr/bin/shutdown "$@"
 	fi
 }
+
+start(){ command $@ &> /dev/null & }
+
+export PATH=/home/stock/ssd/tmp/oci:$PATH
+
+[[ -e "/home/stock/ssd/tmp/oci/bin/lib/python3.10/site-packages/oci_cli/bin/oci_autocomplete.sh" ]] && source "/home/stock/ssd/tmp/oci/bin/lib/python3.10/site-packages/oci_cli/bin/oci_autocomplete.sh"
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/stock/mambaforge-pypy3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/stock/mambaforge-pypy3/etc/profile.d/conda.sh" ]; then
+        . "/home/stock/mambaforge-pypy3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/stock/mambaforge-pypy3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+
+if [ -f "/home/stock/mambaforge-pypy3/etc/profile.d/mamba.sh" ]; then
+    . "/home/stock/mambaforge-pypy3/etc/profile.d/mamba.sh"
+fi
+# <<< conda initialize <<<
+
+
+# Codon compiler path (added by install script)
+export PATH=/home/stock/.codon/bin:$PATH
