@@ -26,8 +26,8 @@ exclude=(
 	--exclude '**/*.so'
 )
 
-rsync -trv "${exclude[@]}" "/home/stock/ssd/projects/project-fusion" "/home/stock/ssd/projects/backup"
-rsync -trv "${exclude[@]}" jernej:/home/user_public/leon_s/workspace/repos/ "/home/stock/ssd/projects/backup"
+# rsync -trv "${exclude[@]}" "/home/stock/ssd/projects/project-fusion" "/home/stock/ssd/projects/backup"
+# rsync -trv "${exclude[@]}" jernej:/home/user_public/leon_s/workspace/repos/ "/home/stock/ssd/projects/backup"
 
 cd "/home/stock/ssd/projects/backup"
 git add .
