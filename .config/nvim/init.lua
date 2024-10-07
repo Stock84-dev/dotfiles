@@ -138,10 +138,10 @@ require('packer').startup(function(use)
   use 'tpope/vim-rhubarb'
   use 'lewis6991/gitsigns.nvim'
 
-  use 'nvim-lualine/lualine.nvim'           -- Fancier statusline
+  use 'nvim-lualine/lualine.nvim'                                   -- Fancier statusline
   use { 'lukas-reineke/indent-blankline.nvim', commit = '9637670' } -- Add indentation guides even on blank lines
-  use 'numToStr/Comment.nvim'               -- "gc" to comment visual regions/lines
-  use 'tpope/vim-sleuth'                    -- Detect tabstop and shiftwidth automatically
+  use 'numToStr/Comment.nvim'                                       -- "gc" to comment visual regions/lines
+  use 'tpope/vim-sleuth'                                            -- Detect tabstop and shiftwidth automatically
 
   -- Fuzzy Finder (files, lsp, etc)
   use { 'nvim-telescope/telescope.nvim', branch = '0.1.x', requires = { 'nvim-lua/plenary.nvim' } }
@@ -169,7 +169,7 @@ require('packer').startup(function(use)
   -- makes word motions work on different cases like CamelCase
   use 'chaoren/vim-wordmotion'
   use 'rhysd/clever-f.vim'
-  use { 'kevinhwang91/rnvimr', commit = "5f0483d"}
+  use { 'kevinhwang91/rnvimr', commit = "5f0483d" }
   use 'crispgm/nvim-tabline'
 
   use 'wakatime/vim-wakatime'
@@ -177,6 +177,70 @@ require('packer').startup(function(use)
   use 'Shatur/neovim-session-manager'
 
   use 'mbbill/undotree'
+
+  use { 'yetone/avante.nvim', requires = {
+    "nvim-treesitter/nvim-treesitter",
+    "stevearc/dressing.nvim",
+    "nvim-lua/plenary.nvim",
+    "MunifTanjim/nui.nvim",
+    --- The below dependencies are optional,
+    "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+    "zbirenbaum/copilot.lua",
+    'MeanderingProgrammer/render-markdown.nvim',
+  },
+    run = "make",
+  }
+
+  -- use {
+  --   'MeanderingProgrammer/render-markdown.nvim',
+  --   after = { 'nvim-treesitter' },
+  --   requires = { 'echasnovski/mini.nvim', opt = true }, -- if you use the mini.nvim suite
+  --   -- requires = { 'echasnovski/mini.icons', opt = true }, -- if you use standalone mini plugins
+  --   -- requires = { 'nvim-tree/nvim-web-devicons', opt = true }, -- if you prefer nvim-web-devicons
+  -- }
+  use({
+    'MeanderingProgrammer/render-markdown.nvim',
+    after = { 'nvim-treesitter' },
+    requires = { 'echasnovski/mini.nvim', opt = true }, -- if you use the mini.nvim suite
+    -- requires = { 'echasnovski/mini.icons', opt = true }, -- if you use standalone mini plugins
+    -- requires = { 'nvim-tree/nvim-web-devicons', opt = true }, -- if you prefer nvim-web-devicons
+    config = function()
+      require('render-markdown').setup({})
+    end,
+  })
+
+  use({
+    "jackMort/ChatGPT.nvim",
+    config = function()
+      require("chatgpt").setup()
+    end,
+    requires = {
+      "MunifTanjim/nui.nvim",
+      "nvim-lua/plenary.nvim",
+      "folke/trouble.nvim",
+      "nvim-telescope/telescope.nvim"
+    }
+  })
+  use({
+    "olimorris/codecompanion.nvim",
+    config = function()
+      require("codecompanion").setup()
+    end,
+    requires = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      "hrsh7th/nvim-cmp",              -- Optional: For using slash commands and variables in the chat buffer
+      "nvim-telescope/telescope.nvim", -- Optional: For using slash commands
+      "stevearc/dressing.nvim"         -- Optional: Improves the default Neovim UI
+    }
+  })
+  use {
+    '3v0k4/exit.nvim',
+  }
+  use {
+    "robitx/gp.nvim",
+  }
+
 
   -- Add custom plugins to packer from ~/.config/nvim/lua/custom/plugins.lua
   local has_plugins, plugins = pcall(require, 'custom.plugins')
@@ -387,6 +451,8 @@ vim.api.nvim_set_hl(0, '@lsp.type.variable.rust', {})
 vim.api.nvim_set_hl(0, '@lsp.mod.constant.rust', { fg = "#CB4B16" })
 vim.api.nvim_set_hl(0, '@lsp.type.selfKeyword.rust', {})
 vim.api.nvim_set_hl(0, '@lsp.type.parameter.rust', { fg = "#B58900" })
+vim.api.nvim_set_hl(0, "@type.builtin", { link = "@type" })
+vim.api.nvim_set_hl(0, "@function.macro", { fg = "#CB4B16" })
 vim.api.nvim_set_hl(0, '@parameter', { fg = "#93A1A1" })
 vim.api.nvim_set_hl(0, '@namespace', { fg = "#93A1A1" })
 vim.api.nvim_set_hl(0, '@variable', { fg = "#93A1A1" })
@@ -1346,19 +1412,61 @@ endfun
 --     autocmd! FileType * autocmd InsertChar <Tab> call v:lua.HandleTabInInsert()
 -- ]], false)
 
-
-
-
-
 require('crates').setup {
-  src = {
-    -- coq = {
-    --   enabled = true,
-    --   name = "crates.nvim",
-    -- },
-  },
+  -- src = {
+  -- coq = {
+  --   enabled = true,
+  --   name = "crates.nvim",
+  -- },
+  -- },
   null_ls = {
     enabled = true,
     name = "crates.nvim",
   },
 }
+
+-- views can only be fully collapsed with the global statusline
+vim.opt.laststatus = 3
+require('avante').setup({
+})
+require("codecompanion").setup({
+  strategies = {
+    chat = {
+      adapter = "anthropic",
+    },
+    inline = {
+      adapter = "copilot",
+    },
+    agent = {
+      adapter = "anthropic",
+    },
+  },
+})
+
+-- Bug in treesitter puts @conceal on many parts in vimdocs, turning it off.
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "vim", "help" },
+  callback = function()
+    vim.opt_local.conceallevel = 0
+  end,
+})
+
+-- Exit setup
+require('exit').setup({ model = 'openai:gpt-3.5-turbo' })
+vim.api.nvim_create_user_command('ExitModel', function(opts)
+  require('exit').set_model(opts.args)
+end, { nargs = 1 })
+vim.api.nvim_create_user_command('Exit', function(opts)
+  require('exit').prompt(opts.args)
+end, { nargs = '*' })
+
+require("gp").setup({
+  openai_api_key = os.getenv("OPENAI_API_KEY"),
+})
+
+
+-- require('render-markdown').setup({
+--   file_types = { "markdown", "Avante", "codecompanion" },
+-- })
+-- avante, must happen after render-markdown
+require('avante_lib').load()

@@ -315,4 +315,10 @@ imap <silent><expr> <C-E> luasnip#choice_active() ? '<Plug>luasnip-next-choice' 
 smap <silent><expr> <C-E> luasnip#choice_active() ? '<Plug>luasnip-next-choice' : '<C-E>'
 ]]
 
+-- AI tools
+vim.keymap.set('n', '<leader>s', ':GpWhisper<CR>', { desc = '[S]peech to text' })
+vim.keymap.set('n', '<leader>c', ':CodeCompanionChat<CR>', { desc = '[C]chat with AI' })
+-- Alias cc command to CodeCompanion
+vim.cmd([[cab cc CodeCompanion]])
+
 return M

@@ -33,3 +33,8 @@ cd "/home/stock/ssd/projects/backup"
 git add .
 git commit -m "cron"
 git push
+
+export XDG_RUNTIME_DIR="/run/user/1000"
+if [ $? -ne 0 ]; then
+    notify-send "Backup failed"
+fi

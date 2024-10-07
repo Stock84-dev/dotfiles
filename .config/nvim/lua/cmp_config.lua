@@ -57,10 +57,10 @@ end
 --   'confirm_done',
 --   cmp_autopairs.on_confirm_done()
 -- )
-cmp.event:on(
-  'confirm_done',
-  on_confirm_done
-)
+-- cmp.event:on(
+--   'confirm_done',
+--   on_confirm_done
+-- )
 
 cmp.setup {
   snippet = {
